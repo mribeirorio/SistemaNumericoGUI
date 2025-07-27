@@ -154,13 +154,12 @@ public class mainForm {
         frame.setLocationRelativeTo(null);// Center the frame on the screen
         frame.setVisible(true);
 
-
-
     }
 
     private void limpaTudo() {
         txtResultado.setText("");
         txtNumero.setText("");
+        btnFatores.setSelected(true);
     }
 
     private Numeral pegaNumero() {
@@ -182,7 +181,7 @@ public class mainForm {
         String baseNumero = "";
         String titulo = "";
         try {
-            String strFatores = String.valueOf(fatores.getFatores(numero));
+            String strFatores = String.valueOf(fatores.getFatores(numero.longValue()));
             if(!numero.getBaseNumerica().isBaseDecimal()) {
                 baseNumero = "Número informado: "+numero.toLiteral()+" (base "+numero.getBaseNumerica().getValorBase()+")";
                 titulo = baseNumero + "\nFatores do número "+numero.getParteInteira().toLiteral()+" (DECIMAL "+numero.getParteInteira().getValorAbsoluto().toPlainString()+")";
@@ -204,7 +203,7 @@ public class mainForm {
         String baseNumero = "";
         String titulo = "";
         try {
-            String strFatores = String.valueOf(fatores.getFatoresPrimos(numero));
+            String strFatores = String.valueOf(fatores.getFatoresPrimos(numero.longValue()));
             if (!numero.getBaseNumerica().isBaseDecimal()) {
                 baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
                 titulo = baseNumero + "\nFatores primos do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
@@ -226,7 +225,7 @@ public class mainForm {
         String baseNumero = "";
         String titulo = "";
         try {
-            String strFatores = fatores.getFatoracaoStr(numero);
+            String strFatores = fatores.getFatoracaoStr(numero.longValue());
             if (!numero.getBaseNumerica().isBaseDecimal()) {
                 baseNumero = "Número informado: " + numero.getParteInteira().toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
                 titulo = baseNumero + "\nFatoração do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
@@ -247,7 +246,7 @@ public class mainForm {
         String baseNumero = "";
         String titulo = "";
         try {
-            String strFatores = fatores.getProdutoDePotencias(numero);
+            String strFatores = fatores.getProdutoDePotencias(numero.longValue());
             if (!numero.getBaseNumerica().isBaseDecimal()) {
                 baseNumero = "Número informado: " + numero.getParteInteira().toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
                 titulo = baseNumero + "\nProduto de potências do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
@@ -292,7 +291,7 @@ public class mainForm {
         String titulo = "";
         try {
 
-            String strPrimos = primosAte.getFatoresPrimosAte(numero).toString();
+            String strPrimos = primosAte.getFatoresPrimosAte(numero.longValue()).toString();
             if(!numero.getBaseNumerica().isBaseDecimal()) {
                 baseNumero = "Número informado: "+numero.toLiteral()+" (base "+numero.getBaseNumerica().getValorBase()+")";
                 titulo = baseNumero + "\nPrimos até o número "+numero.getParteInteira().toLiteral()+" (DECIMAL "+numero.getParteInteira().getValorAbsoluto().toPlainString()+")";
