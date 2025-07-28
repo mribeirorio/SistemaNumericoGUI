@@ -6,20 +6,17 @@ import org.mribeiro.sistemaNumerico.Numeral;
 import javax.swing.*;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
-import javax.swing.JSpinner.DefaultEditor;
 
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 import java.util.Enumeration;
 
@@ -29,15 +26,16 @@ public class mainForm {
     private JPanel pnlMenu;
     private JButton btnEncerrar;
     private JButton btnCalcular;
+    private JButton btnLimparTudo;
+
     private JTextField txtNumero;
     private JTextArea txtResultado;
     private JLabel lblNumero;
     private JPanel pnlResultado;
     private JLabel lblPrimoComposto;
 
-    private final SpinnerNumberModel numberModel = new SpinnerNumberModel(10, 0, Constantes.ALGARISMOS_POSSIVEIS.length()-1, 1); // initial, min, max, step
+    private final SpinnerNumberModel numberModel = new SpinnerNumberModel(10, 2, Constantes.ALGARISMOS_POSSIVEIS.length(), 1); // initial, min, max, step
     private JSpinner spnBase;// = new JSpinner(numberModel);;
-
     private JRadioButton btnFatores;
     private JRadioButton btnPrimos;
     private JRadioButton btnFatoracao;
@@ -49,14 +47,23 @@ public class mainForm {
 
     private JLabel lblDebug;
     private JLabel lblMenu;
+    private JLabel lblAlgarismosValidos;
+
 
     public mainForm() {
         txtResultado.setLineWrap(true);
         txtResultado.setBorder(null);
-        txtNumero.setBorder(null);
+
         spnBase.setModel(numberModel);
         // Make the JSpinner's text field non-editable
         ((JSpinner.DefaultEditor) spnBase.getEditor()).getTextField().setEditable(false);
+
+        txtNumero.setBorder(null);
+        //JTextField textField = new JTextField(20);
+        PlainDocument doc = (PlainDocument) txtNumero.getDocument();
+        doc.setDocumentFilter(new NumericDocumentFilter((Integer) spnBase.getValue()));
+        // Atualiza o rótulo de algarismos válidos
+        ajustaAlgarismos();
 
         // menu
         btnFatores.setActionCommand("fatores");
@@ -75,7 +82,7 @@ public class mainForm {
         btnGroup.add(btnEstrutura);
         btnFatores.setSelected(true);
 
-        setButtonGroupEnabled(false);
+        menuHabilitado(false);
 
         btnEncerrar.addActionListener(new ActionListener() {
             @Override
@@ -88,10 +95,10 @@ public class mainForm {
         spnBase.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                // This method is called whenever the JSpinner's value changes
-                Object currentValue = spnBase.getValue();
-                //System.out.println("Spinner value changed to: " + currentValue);
-                limpaTudo();
+                int currentValue = (int) spnBase.getValue();
+                limpaEntrada();
+                // redefine o filtro de entrada de acordo com a base numérica
+                doc.setDocumentFilter(new NumericDocumentFilter(currentValue));
             }
         });
 
@@ -113,9 +120,9 @@ public class mainForm {
                     Calculo calculo;
                     try {
                         if(num.getParteDecimal().getValorAbsoluto().compareTo(BigDecimal.ZERO) > 0) {
-                            calculo = new Calculo(num.toBigDecimal());
+                            calculo = new Calculo(num);
                         } else {
-                            calculo = new Calculo(num.longValue());
+                            calculo = new Calculo(num);
                         }
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
@@ -172,47 +179,41 @@ public class mainForm {
                             }
                             break;
                     }
-
                     txtResultado.setText(strResultado);
-
                 } else {
                     // No radio button is currently selected
                     JOptionPane.showMessageDialog(frame, "No option selected.");
-
                 }
             }
         });
-
-        txtNumero.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                super.focusLost(e);
-                try {
-                    primoOuComposto();
-                } catch (IndiceForaDaFaixaException ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
-
 
         txtNumero.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 // Called when text is inserted
                 checkTextFieldStatus();
+                limpaResultado();
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
                 // Called when text is removed
                 checkTextFieldStatus();
+                limpaResultado();
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
                 // Called when attributes of the text are changed (less common for basic text fields)
                 checkTextFieldStatus();
+                limpaResultado();
+            }
+        });
+
+        btnLimparTudo.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                limpaTudo();
             }
         });
     }
@@ -229,21 +230,50 @@ public class mainForm {
 
     }
 
+    private void limpaEntrada() {
+        // Limpa o filtro de algarismos para poder resetar o campo de texto
+        AbstractDocument currentDoc = (AbstractDocument) txtNumero.getDocument();
+        currentDoc.setDocumentFilter(null); // Remove the filter
+        txtNumero.setText("");
+        // recoloca o filtro de algarismos
+        int currentValue = (int) spnBase.getValue();
+        currentDoc.setDocumentFilter(new NumericDocumentFilter(currentValue));
+        checkTextFieldStatus();
+    }
+
+    private void limpaResultado() {
+        lblPrimoComposto.setText("");
+        txtResultado.setText("");
+    }
+
+    private void ajustaAlgarismos() {
+        String strAlgarismos="Algarismos válidos na base "+spnBase.getValue().toString()+": ";
+        strAlgarismos += Constantes.ALGARISMOS_POSSIVEIS.substring(0,(int)spnBase.getValue());
+        lblAlgarismosValidos.setText(strAlgarismos);
+        //limpaTudo();
+    }
+
     private void checkTextFieldStatus() {
         if (txtNumero.getText().isEmpty()) {
             // Action to perform when the text field is empty
-            setButtonGroupEnabled(false);
+            menuHabilitado(false);
+            lblPrimoComposto.setText("");
+            ajustaAlgarismos();
         } else {
             // Action to perform when the text field is not empty
-            setButtonGroupEnabled(true);
+            menuHabilitado(true);
+            ajustaAlgarismos();
         }
     }
 
     private void limpaTudo() {
+        limpaEntrada();
         txtResultado.setText("");
-        txtNumero.setText("");
+        lblPrimoComposto.setText("");
         btnFatores.setSelected(true);
-        setButtonGroupEnabled(false);
+        spnBase.setValue(10);
+        menuHabilitado(false);
+        ajustaAlgarismos();
     }
 
     private Numeral pegaNumero() {
@@ -259,8 +289,9 @@ public class mainForm {
         return num;
     }
 
-    private void setButtonGroupEnabled(boolean enabled) {
+    private void menuHabilitado(boolean enabled) {
         btnCalcular.setEnabled(enabled);
+        btnLimparTudo.setEnabled(enabled);
         Enumeration<AbstractButton> buttons = btnGroup.getElements();
         while (buttons.hasMoreElements()) {
             AbstractButton button = buttons.nextElement();
@@ -268,6 +299,21 @@ public class mainForm {
         }
     }
 
+    private void primoOuComposto() throws IndiceForaDaFaixaException {
+        Numeral numero = pegaNumero();
+        FatoresNumericos fatores = new FatoresNumericos();
+
+        if(fatores.e_Primo(numero)) {
+            lblPrimoComposto.setText("Número PRIMO");
+            lblPrimoComposto.setForeground(Color.RED);
+        } else if(numero.intValue()==0 || numero.intValue()==1) {
+            lblPrimoComposto.setText("O número "+numero.longValue()+" não é primo nem composto");
+            lblPrimoComposto.setForeground(Color.ORANGE);
+        } else {
+            lblPrimoComposto.setText("Número COMPOSTO");
+            lblPrimoComposto.setForeground(Color.BLUE);
+        }
+    }
 /*
     private void fatores() {
         Numeral numero = pegaNumero();
@@ -428,19 +474,5 @@ public class mainForm {
         txtResultado.setText(String.valueOf(numero));
     }
 */
-    private void primoOuComposto() throws IndiceForaDaFaixaException {
-        Numeral numero = pegaNumero();
-        FatoresNumericos fatores = new FatoresNumericos();
 
-        if(fatores.e_Primo(numero)) {
-            lblPrimoComposto.setText("Número PRIMO");
-            lblPrimoComposto.setForeground(Color.RED);
-        } else if(numero.intValue()==0 || numero.intValue()==1) {
-            lblPrimoComposto.setText("O número "+numero.longValue()+" não é primo nem composto");
-            lblPrimoComposto.setForeground(Color.ORANGE);
-        } else {
-            lblPrimoComposto.setText("Número COMPOSTO");
-            lblPrimoComposto.setForeground(Color.BLUE);
-        }
-    }
 }

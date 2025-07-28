@@ -3,14 +3,15 @@ import org.mribeiro.sistemaNumerico.Numeral;
 
 public class Calculo {
 
-    private Number numero;
+    private Numeral numero;
 
-    public Calculo(Number objNum) {
-        this.numero = objNum;
+    public Calculo(Numeral num) {
+
+        this.numero = num;
     }
 
     private Numeral pegaNumero() throws Exception {
-        return new Numeral(this.numero);
+        return this.numero;
     }
 
     public String fatores() throws Exception {
@@ -29,10 +30,10 @@ public class Calculo {
                 String strFatores = String.valueOf(fatores.getFatores(numero.longValue()));
                 if (!numero.getBaseNumerica().isBaseDecimal()) {
                     baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
-                    titulo = baseNumero + "\nFatores do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
+                    titulo = baseNumero + "\nFatores do número " + numero.toLiteral() + " (DECIMAL " + numero.getValorDecimal().toPlainString() + ")";
                     titulo += "\n--> " + tamanho + " fatores";
                 } else {
-                    titulo = "Fatores do número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
+                    titulo = "Fatores do número " + numero.toLiteral()+" (Parte inteira: "+numero.getCharSinal()+numero.getParteInteira().toLiteral()+")";
                     titulo += "\n--> " + tamanho + " fatores";
                 }
                 txtResultado = (titulo + "\n\n" + strFatores);
