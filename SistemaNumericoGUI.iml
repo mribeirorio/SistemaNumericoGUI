@@ -17,6 +17,14 @@
       </library>
     </orderEntry>
     <orderEntry type="library" exported="" name="java1" level="project" />
-    <orderEntry type="library" name="SistemaNumerico" level="project" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../SistemaNumerico/out/artifacts/SistemaNumerico/SistemaNumerico.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

@@ -11,10 +11,17 @@ import javax.swing.JSpinner.DefaultEditor;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.math.BigDecimal;
+import java.util.Enumeration;
 
 public class mainForm {
     private static JFrame frame = new JFrame("Análise Numérica v1.0");
@@ -68,6 +75,8 @@ public class mainForm {
         btnGroup.add(btnEstrutura);
         btnFatores.setSelected(true);
 
+        setButtonGroupEnabled(false);
+
         btnEncerrar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -89,6 +98,7 @@ public class mainForm {
         btnCalcular.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String strResultado = "";
                 ButtonModel selectedModel = btnGroup.getSelection();
                 if (selectedModel != null) {
                     try {
@@ -97,31 +107,73 @@ public class mainForm {
                         throw new RuntimeException(ex);
                     }
                     // A radio button is selected
+
                     String selectedActionCommand = selectedModel.getActionCommand();
+                    Numeral num = pegaNumero();
+                    Calculo calculo;
+                    try {
+                        if(num.getParteDecimal().getValorAbsoluto().compareTo(BigDecimal.ZERO) > 0) {
+                            calculo = new Calculo(num.toBigDecimal());
+                        } else {
+                            calculo = new Calculo(num.longValue());
+                        }
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
+                    }
                     //JOptionPane.showMessageDialog(frame, "Selected: " + selectedActionCommand);
                     switch(selectedActionCommand) {
                         case "fatores": // calcula todos os fatores do número
-                            fatores();
+                            try {
+                                strResultado = calculo.fatores();
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
                             break;
                         case "primos": // calcula todos os fatores do número
-                            primos();
+                            try {
+                                strResultado = calculo.primos();
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
                             break;
                         case "fatoracao": // calcula todos os fatores do número
-                            fatoracao();
+                            try {
+                                strResultado = calculo.fatoracao();
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
                             break;
                         case "potencias": // calcula todos os fatores do número
-                            potencias();
+                            try {
+                                strResultado = calculo.potencias();
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
                             break;
                         case "extenso": // calcula todos os fatores do número
-                            porExtenso();
+                            try {
+                                strResultado = calculo.porExtenso();
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
                             break;
                         case "primosAte": // calcula todos os fatores do número
-                            primosAte();
+                            try {
+                                strResultado = calculo.primosAte();
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
                             break;
                         case "estrutura": // calcula todos os fatores do número
-                            estrutura();
+                            try {
+                                strResultado = calculo.estrutura();
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
                             break;
                     }
+
+                    txtResultado.setText(strResultado);
 
                 } else {
                     // No radio button is currently selected
@@ -130,6 +182,7 @@ public class mainForm {
                 }
             }
         });
+
         txtNumero.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
@@ -141,12 +194,32 @@ public class mainForm {
                 }
             }
         });
+
+
+        txtNumero.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                // Called when text is inserted
+                checkTextFieldStatus();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                // Called when text is removed
+                checkTextFieldStatus();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                // Called when attributes of the text are changed (less common for basic text fields)
+                checkTextFieldStatus();
+            }
+        });
     }
 
 
 
     public static void main(String[] args) {
-
         //JFrame frame = new JFrame("Análise Numérica v1.0");
         frame.setContentPane(new mainForm().pnlContainer);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -156,10 +229,21 @@ public class mainForm {
 
     }
 
+    private void checkTextFieldStatus() {
+        if (txtNumero.getText().isEmpty()) {
+            // Action to perform when the text field is empty
+            setButtonGroupEnabled(false);
+        } else {
+            // Action to perform when the text field is not empty
+            setButtonGroupEnabled(true);
+        }
+    }
+
     private void limpaTudo() {
         txtResultado.setText("");
         txtNumero.setText("");
         btnFatores.setSelected(true);
+        setButtonGroupEnabled(false);
     }
 
     private Numeral pegaNumero() {
@@ -175,90 +259,116 @@ public class mainForm {
         return num;
     }
 
+    private void setButtonGroupEnabled(boolean enabled) {
+        btnCalcular.setEnabled(enabled);
+        Enumeration<AbstractButton> buttons = btnGroup.getElements();
+        while (buttons.hasMoreElements()) {
+            AbstractButton button = buttons.nextElement();
+            button.setEnabled(enabled);
+        }
+    }
+
+/*
     private void fatores() {
         Numeral numero = pegaNumero();
-        FatoresNumericos fatores = new FatoresNumericos();
-        String baseNumero = "";
-        String titulo = "";
-        try {
-            String strFatores = String.valueOf(fatores.getFatores(numero.longValue()));
-            if(!numero.getBaseNumerica().isBaseDecimal()) {
-                baseNumero = "Número informado: "+numero.toLiteral()+" (base "+numero.getBaseNumerica().getValorBase()+")";
-                titulo = baseNumero + "\nFatores do número "+numero.getParteInteira().toLiteral()+" (DECIMAL "+numero.getParteInteira().getValorAbsoluto().toPlainString()+")";
-                titulo += "\n--> "+fatores.getFatores(numero).size()+" fatores";
-            } else {
-                titulo = "Fatores do número "+numero.getParteInteira().getValorAbsoluto().toPlainString();
-                titulo += "\n--> "+fatores.getFatores(numero).size()+" fatores";
+        if(numero.intValue()==0) {
+            txtResultado.setText("Zero tem um número infinito de fatores, o que significa que todo número inteiro, inteiro, racional, real e imaginário é um fator de zero. Isso ocorre porque qualquer número multiplicado por zero é igual a zero, então qualquer número pode dividir zero sem deixar resto.");
+        } else {
+            FatoresNumericos fatores = new FatoresNumericos();
+            String baseNumero = "";
+            String titulo = "";
+            try {
+                long tamanho = (fatores.getFatores(numero.longValue())).size();
+                String strFatores = String.valueOf(fatores.getFatores(numero.longValue()));
+                if (!numero.getBaseNumerica().isBaseDecimal()) {
+                    baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
+                    titulo = baseNumero + "\nFatores do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
+                    titulo += "\n--> " + tamanho + " fatores";
+                } else {
+                    titulo = "Fatores do número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
+                    titulo += "\n--> " + tamanho + " fatores";
+                }
+                txtResultado.setText(titulo + "\n\n" + strFatores);
+            } catch (Exception e) {
+                //throw new RuntimeException(e);
+                JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular os fatores.\nTente novamente.");
             }
-            txtResultado.setText(titulo+"\n\n"+strFatores);
-        } catch (Exception e) {
-            //throw new RuntimeException(e);
-            JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular os fatores.\nTente novamente.");
         }
     }
 
     private void primos() {
         Numeral numero = pegaNumero();
-        FatoresNumericos fatores = new FatoresNumericos();
-        String baseNumero = "";
-        String titulo = "";
-        try {
-            String strFatores = String.valueOf(fatores.getFatoresPrimos(numero.longValue()));
-            if (!numero.getBaseNumerica().isBaseDecimal()) {
-                baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
-                titulo = baseNumero + "\nFatores primos do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
-                titulo += "\n--> " + fatores.getFatoresPrimos(numero).size() + " fatores primos";
-            } else {
-                titulo = "Fatores primos do número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
-                titulo += "\n--> " + fatores.getFatoresPrimos(numero).size() + " fatores primos";
+        if(numero.intValue()==0) {
+            txtResultado.setText("Zero tem um número infinito de fatores, o que significa que todo número inteiro, inteiro, racional, real e imaginário é um fator de zero. Isso ocorre porque qualquer número multiplicado por zero é igual a zero, então qualquer número pode dividir zero sem deixar resto.");
+        } else {
+            FatoresNumericos fatores = new FatoresNumericos();
+            String baseNumero = "";
+            String titulo = "";
+            try {
+                String strFatores = String.valueOf(fatores.getFatoresPrimos(numero.longValue()));
+                if (!numero.getBaseNumerica().isBaseDecimal()) {
+                    baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
+                    titulo = baseNumero + "\nFatores primos do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
+                    titulo += "\n--> " + fatores.getFatoresPrimos(numero).size() + " fatores primos";
+                } else {
+                    titulo = "Fatores primos do número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
+                    titulo += "\n--> " + fatores.getFatoresPrimos(numero).size() + " fatores primos";
+                }
+                txtResultado.setText(titulo + "\n\n" + strFatores);
+            } catch (Exception e) {
+                //throw new RuntimeException(e);
+                JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular os primos.\nTente novamente.");
             }
-            txtResultado.setText(titulo + "\n\n" + strFatores);
-        } catch (Exception e) {
-            //throw new RuntimeException(e);
-            JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular os primos.\nTente novamente.");
         }
     }
 
     private void fatoracao() {
         Numeral numero = pegaNumero();
-        FatoresNumericos fatores = new FatoresNumericos();
-        String baseNumero = "";
-        String titulo = "";
-        try {
-            String strFatores = fatores.getFatoracaoStr(numero.longValue());
-            if (!numero.getBaseNumerica().isBaseDecimal()) {
-                baseNumero = "Número informado: " + numero.getParteInteira().toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
-                titulo = baseNumero + "\nFatoração do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
-            } else {
-                titulo = "Fatoração do número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
+        if(numero.intValue()==0) {
+            txtResultado.setText("Zero tem um número infinito de fatores, o que significa que todo número inteiro, inteiro, racional, real e imaginário é um fator de zero. Isso ocorre porque qualquer número multiplicado por zero é igual a zero, então qualquer número pode dividir zero sem deixar resto.");
+        } else {
+            FatoresNumericos fatores = new FatoresNumericos();
+            String baseNumero = "";
+            String titulo = "";
+            try {
+                String strFatores = fatores.getFatoracaoStr(numero.longValue());
+                if (!numero.getBaseNumerica().isBaseDecimal()) {
+                    baseNumero = "Número informado: " + numero.getParteInteira().toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
+                    titulo = baseNumero + "\nFatoração do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
+                } else {
+                    titulo = "Fatoração do número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
+                }
+                titulo += "\n(Fatorando apenas a parte INTEIRA)";
+                txtResultado.setText(titulo + "\n\n" + strFatores);
+            } catch (Exception e) {
+                //throw new RuntimeException(e);
+                JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular a fatoração.\nTente novamente.");
             }
-            titulo += "\n(Fatorando apenas a parte INTEIRA)";
-            txtResultado.setText(titulo + "\n\n" + strFatores);
-        } catch (Exception e) {
-            //throw new RuntimeException(e);
-            JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular a fatoração.\nTente novamente.");
         }
     }
 
     private void potencias() {
         Numeral numero = pegaNumero();
-        FatoresNumericos fatores = new FatoresNumericos();
-        String baseNumero = "";
-        String titulo = "";
-        try {
-            String strFatores = fatores.getProdutoDePotencias(numero.longValue());
-            if (!numero.getBaseNumerica().isBaseDecimal()) {
-                baseNumero = "Número informado: " + numero.getParteInteira().toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
-                titulo = baseNumero + "\nProduto de potências do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
-            } else {
-                titulo = "Produto de potências do número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
+        if(numero.intValue()==0) {
+            txtResultado.setText("Zero tem um número infinito de fatores, o que significa que todo número inteiro, inteiro, racional, real e imaginário é um fator de zero. Isso ocorre porque qualquer número multiplicado por zero é igual a zero, então qualquer número pode dividir zero sem deixar resto.");
+        } else {
+            FatoresNumericos fatores = new FatoresNumericos();
+            String baseNumero = "";
+            String titulo = "";
+            try {
+                String strFatores = fatores.getProdutoDePotencias(numero.longValue());
+                if (!numero.getBaseNumerica().isBaseDecimal()) {
+                    baseNumero = "Número informado: " + numero.getParteInteira().toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
+                    titulo = baseNumero + "\nProduto de potências do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
+                } else {
+                    titulo = "Produto de potências do número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
+                }
+                titulo += "\n(Fatorando apenas a parte INTEIRA)";
+                txtResultado.setText(titulo + "\n\n" + strFatores);
+            } catch (Exception e) {
+                //throw new RuntimeException(e);
+                JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular as potências.\nTente novamente.");
             }
-            titulo += "\n(Fatorando apenas a parte INTEIRA)";
-            txtResultado.setText(titulo + "\n\n" + strFatores);
-        } catch (Exception e) {
-            //throw new RuntimeException(e);
-            JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular as potências.\nTente novamente.");
-
         }
     }
 
@@ -286,26 +396,28 @@ public class mainForm {
 
     private void primosAte() {
         Numeral numero = pegaNumero();
-        FatoresNumericos primosAte = new FatoresNumericos();
-        String baseNumero = "";
-        String titulo = "";
-        try {
+        if(numero.intValue()==0) {
+            txtResultado.setText("Não existem primos menores que zero; o menor número primo é o 2.");
+        } else {
+            FatoresNumericos primosAte = new FatoresNumericos();
+            String baseNumero = "";
+            String titulo = "";
+            try {
 
-            String strPrimos = primosAte.getFatoresPrimosAte(numero.longValue()).toString();
-            if(!numero.getBaseNumerica().isBaseDecimal()) {
-                baseNumero = "Número informado: "+numero.toLiteral()+" (base "+numero.getBaseNumerica().getValorBase()+")";
-                titulo = baseNumero + "\nPrimos até o número "+numero.getParteInteira().toLiteral()+" (DECIMAL "+numero.getParteInteira().getValorAbsoluto().toPlainString()+")";
-                titulo += "\n--> "+primosAte.getFatoresPrimosAte(numero).size()+" números primos entre 2 e "+numero.getValorDecimal().toPlainString();
-            } else {
-                titulo = "Primos até o número "+numero.getParteInteira().getValorAbsoluto().toPlainString();
-                titulo += "\n--> "+primosAte.getFatoresPrimosAte(numero).size()+" números primos entre 2 e "+numero.getParteInteira().getValorAbsoluto().toPlainString();
+                String strPrimos = primosAte.getFatoresPrimosAte(numero.longValue()).toString();
+                if (!numero.getBaseNumerica().isBaseDecimal()) {
+                    baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
+                    titulo = baseNumero + "\nPrimos até o número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
+                    titulo += "\n--> " + primosAte.getFatoresPrimosAte(numero).size() + " números primos entre 2 e " + numero.getValorDecimal().toPlainString();
+                } else {
+                    titulo = "Primos até o número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
+                    titulo += "\n--> " + primosAte.getFatoresPrimosAte(numero).size() + " números primos entre 2 e " + numero.getParteInteira().getValorAbsoluto().toPlainString();
+                }
+                txtResultado.setText(titulo + "\n\n" + strPrimos);
+            } catch (Exception e) {
+                //throw new RuntimeException(e);
+                JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular os fatores primos.\nTente novamente.");
             }
-
-            txtResultado.setText(titulo+"\n\n" + strPrimos);
-
-        } catch (Exception e) {
-            //throw new RuntimeException(e);
-            JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular os fatores primos.\nTente novamente.");
         }
     }
 
@@ -315,10 +427,20 @@ public class mainForm {
         String titulo = "";
         txtResultado.setText(String.valueOf(numero));
     }
-
+*/
     private void primoOuComposto() throws IndiceForaDaFaixaException {
         Numeral numero = pegaNumero();
         FatoresNumericos fatores = new FatoresNumericos();
-        lblPrimoComposto.setText((fatores.e_Primo(numero)) ? "Número PRIMO" : "Número COMPOSTO");
+
+        if(fatores.e_Primo(numero)) {
+            lblPrimoComposto.setText("Número PRIMO");
+            lblPrimoComposto.setForeground(Color.RED);
+        } else if(numero.intValue()==0 || numero.intValue()==1) {
+            lblPrimoComposto.setText("O número "+numero.longValue()+" não é primo nem composto");
+            lblPrimoComposto.setForeground(Color.ORANGE);
+        } else {
+            lblPrimoComposto.setText("Número COMPOSTO");
+            lblPrimoComposto.setForeground(Color.BLUE);
+        }
     }
 }
