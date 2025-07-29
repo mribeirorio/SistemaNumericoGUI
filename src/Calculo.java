@@ -26,16 +26,15 @@ public class Calculo {
             String baseNumero = "";
             String titulo = "";
             try {
-                long tamanho = (fatores.getFatores(numero.longValue())).size();
+                long quantos = (fatores.getFatores(numero.longValue())).size();
                 String strFatores = String.valueOf(fatores.getFatores(numero.longValue()));
                 if (!numero.getBaseNumerica().isBaseDecimal()) {
                     baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
                     titulo = baseNumero + "\nFatores do número " + numero.toLiteral() + " (DECIMAL " + numero.getValorDecimal().toPlainString() + ")";
-                    titulo += "\n--> " + tamanho + " fatores";
                 } else {
                     titulo = "Fatores do número " + numero.toLiteral()+" (Parte inteira: "+numero.getCharSinal()+numero.getParteInteira().toLiteral()+")";
-                    titulo += "\n--> " + tamanho + " fatores";
                 }
+                titulo += "\n--> " + quantos + " fator" + ((quantos==1) ? "" : "es");
                 txtResultado = (titulo + "\n\n" + strFatores);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -56,14 +55,14 @@ public class Calculo {
             String titulo = "";
             try {
                 String strFatores = String.valueOf(fatores.getFatoresPrimos(numero.longValue()));
+                int quantos = fatores.getFatoresPrimos(numero).size();
                 if (!numero.getBaseNumerica().isBaseDecimal()) {
                     baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
                     titulo = baseNumero + "\nFatores primos do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
-                    titulo += "\n--> " + fatores.getFatoresPrimos(numero).size() + " fatores primos";
                 } else {
                     titulo = "Fatores primos do número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
-                    titulo += "\n--> " + fatores.getFatoresPrimos(numero).size() + " fatores primos";
                 }
+                titulo += "\n--> " + quantos + " fator" + ((quantos==1) ? "": "es") + " primo" + ((quantos==1) ? "": "s");
                 txtResultado = (titulo + "\n\n" + strFatores);
             } catch (Exception e) {
                 throw new RuntimeException(e);

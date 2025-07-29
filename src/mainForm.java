@@ -17,8 +17,12 @@ import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.util.Enumeration;
+
+import static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;
 
 public class mainForm {
     private static JFrame frame = new JFrame("Análise Numérica v1.0");
@@ -48,11 +52,13 @@ public class mainForm {
     private JLabel lblDebug;
     private JLabel lblMenu;
     private JLabel lblAlgarismosValidos;
+    private JScrollPane pnlScroll;
 
 
     public mainForm() {
         txtResultado.setLineWrap(true);
         txtResultado.setBorder(null);
+        pnlScroll.setBorder(null);
 
         spnBase.setModel(numberModel);
         // Make the JSpinner's text field non-editable
@@ -99,8 +105,11 @@ public class mainForm {
                 limpaEntrada();
                 // redefine o filtro de entrada de acordo com a base numérica
                 doc.setDocumentFilter(new NumericDocumentFilter(currentValue));
+                lblPrimoComposto.setText(getNomeDaBase(currentValue));
             }
         });
+
+        lblPrimoComposto.setText(getNomeDaBase((int)spnBase.getValue()));
 
         btnCalcular.addActionListener(new ActionListener() {
             @Override
@@ -227,7 +236,18 @@ public class mainForm {
         frame.pack();
         frame.setLocationRelativeTo(null);// Center the frame on the screen
         frame.setVisible(true);
+        SwingUtilities.invokeLater(mainForm::new);
 
+    }
+
+    private String getNomeDaBase(int base) {
+        String strBase = Constantes.ARRAY_NOME_SISTEMAS_NUMERICOS[base];
+        if(strBase=="") {
+            strBase = "BASE "+base;
+        } else {
+            strBase = "BASE "+strBase;
+        }
+        return strBase;
     }
 
     private void limpaEntrada() {
@@ -301,17 +321,20 @@ public class mainForm {
 
     private void primoOuComposto() throws IndiceForaDaFaixaException {
         Numeral numero = pegaNumero();
-        FatoresNumericos fatores = new FatoresNumericos();
-
-        if(fatores.e_Primo(numero)) {
-            lblPrimoComposto.setText("Número PRIMO");
-            lblPrimoComposto.setForeground(Color.RED);
-        } else if(numero.intValue()==0 || numero.intValue()==1) {
-            lblPrimoComposto.setText("O número "+numero.longValue()+" não é primo nem composto");
-            lblPrimoComposto.setForeground(Color.ORANGE);
+        if(numero != null) {
+            FatoresNumericos fatores = new FatoresNumericos();
+            if(fatores.e_Primo(numero)) {
+                lblPrimoComposto.setText("Número PRIMO");
+                lblPrimoComposto.setForeground(Color.RED);
+            } else if(numero.intValue()==0 || numero.intValue()==1) {
+                lblPrimoComposto.setText("O número "+numero.longValue()+" não é primo nem composto");
+                lblPrimoComposto.setForeground(Color.ORANGE);
+            } else {
+                lblPrimoComposto.setText("Número COMPOSTO");
+                lblPrimoComposto.setForeground(Color.BLUE);
+            }
         } else {
-            lblPrimoComposto.setText("Número COMPOSTO");
-            lblPrimoComposto.setForeground(Color.BLUE);
+            lblPrimoComposto.setText("");
         }
     }
 /*
