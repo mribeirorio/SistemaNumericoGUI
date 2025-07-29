@@ -1,6 +1,8 @@
 import org.mribeiro.fatores.FatoresNumericos;
 import org.mribeiro.sistemaNumerico.Numeral;
 
+import java.util.ArrayList;
+
 public class Calculo {
 
     private Numeral numero;
@@ -152,6 +154,7 @@ public class Calculo {
 
     public String primosAte() throws Exception {
         Numeral numero = pegaNumero();
+        ArrayList<Long> fatores = new ArrayList<>();
         String txtResultado = "";
         if(numero.intValue()==0) {
             txtResultado = ("Não existem primos menores que zero; o menor número primo é o 2.");
@@ -160,15 +163,15 @@ public class Calculo {
             String baseNumero = "";
             String titulo = "";
             try {
-
-                String strPrimos = primosAte.getFatoresPrimosAte(numero.longValue()).toString();
+                fatores = primosAte.getFatoresPrimosAte(numero.longValue());
+                String strPrimos = fatores.toString();
                 if (!numero.getBaseNumerica().isBaseDecimal()) {
                     baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
                     titulo = baseNumero + "\nPrimos até o número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
-                    titulo += "\n--> " + primosAte.getFatoresPrimosAte(numero).size() + " números primos entre 2 e " + numero.getValorDecimal().toPlainString();
+                    titulo += "\n--> " + fatores.size() + " números primos entre 2 e " + numero.getValorDecimal().toPlainString();
                 } else {
                     titulo = "Primos até o número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
-                    titulo += "\n--> " + primosAte.getFatoresPrimosAte(numero).size() + " números primos entre 2 e " + numero.getParteInteira().getValorAbsoluto().toPlainString();
+                    titulo += "\n--> " + fatores.size() + " números primos entre 2 e " + numero.getParteInteira().getValorAbsoluto().toPlainString();
                 }
                 txtResultado = (titulo + "\n\n" + strPrimos);
             } catch (Exception e) {

@@ -267,7 +267,7 @@ public class mainForm {
     }
 
     private void ajustaAlgarismos() {
-        String strAlgarismos="Algarismos válidos na base "+spnBase.getValue().toString()+": ";
+        String strAlgarismos="Algarismos válidos na base "+spnBase.getValue().toString()+" -> ";
         strAlgarismos += Constantes.ALGARISMOS_POSSIVEIS.substring(0,(int)spnBase.getValue());
         lblAlgarismosValidos.setText(strAlgarismos);
         //limpaTudo();
@@ -311,7 +311,7 @@ public class mainForm {
 
     private void menuHabilitado(boolean enabled) {
         btnCalcular.setEnabled(enabled);
-        btnLimparTudo.setEnabled(enabled);
+        //btnLimparTudo.setEnabled(enabled);
         Enumeration<AbstractButton> buttons = btnGroup.getElements();
         while (buttons.hasMoreElements()) {
             AbstractButton button = buttons.nextElement();

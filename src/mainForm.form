@@ -38,7 +38,6 @@
               <focusable value="false"/>
               <font/>
               <foreground color="-15198184"/>
-              <icon value="SistemaNumericoIcon.ico"/>
               <text value="Calcular"/>
               <visible value="true"/>
             </properties>
