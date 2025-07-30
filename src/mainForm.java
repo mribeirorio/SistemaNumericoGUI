@@ -17,12 +17,8 @@ import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.util.Enumeration;
-
-import static com.sun.java.accessibility.util.AWTEventMonitor.addWindowListener;
 
 public class mainForm {
     private static JFrame frame = new JFrame("Análise Numérica v1.0");
@@ -43,10 +39,11 @@ public class mainForm {
     private JRadioButton btnFatores;
     private JRadioButton btnPrimos;
     private JRadioButton btnFatoracao;
+    private JRadioButton btnDecompor;
     private JRadioButton btnPotencias;
     private JRadioButton btnExtenso;
     private JRadioButton btnPrimosAte;
-    private JRadioButton btnEstrutura;
+    private JRadioButton btnAnalise;
     private ButtonGroup btnGroup = new ButtonGroup();
 
     private JLabel lblDebug;
@@ -75,18 +72,20 @@ public class mainForm {
         btnFatores.setActionCommand("fatores");
         btnPrimos.setActionCommand("primos");
         btnFatoracao.setActionCommand("fatoracao");
+        btnDecompor.setActionCommand("decompor");
         btnPotencias.setActionCommand("potencias");
         btnExtenso.setActionCommand("extenso");
         btnPrimosAte.setActionCommand("primosAte");
-        btnEstrutura.setActionCommand("estrutura");
+        btnAnalise.setActionCommand("analise");
         btnGroup.add(btnFatores);
         btnGroup.add(btnPrimos);
         btnGroup.add(btnFatoracao);
+        btnGroup.add(btnDecompor);
         btnGroup.add(btnPotencias);
         btnGroup.add(btnExtenso);
         btnGroup.add(btnPrimosAte);
-        btnGroup.add(btnEstrutura);
-        btnFatores.setSelected(true);
+        btnGroup.add(btnAnalise);
+        btnAnalise.setSelected(true);
 
         menuHabilitado(false);
 
@@ -159,6 +158,13 @@ public class mainForm {
                                 throw new RuntimeException(ex);
                             }
                             break;
+                        case "decompor": // calcula todos os fatores do número
+                            try {
+                                strResultado = calculo.decompor();
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            break;
                         case "potencias": // calcula todos os fatores do número
                             try {
                                 strResultado = calculo.potencias();
@@ -180,9 +186,9 @@ public class mainForm {
                                 throw new RuntimeException(ex);
                             }
                             break;
-                        case "estrutura": // calcula todos os fatores do número
+                        case "analise": // calcula todos os fatores do número
                             try {
-                                strResultado = calculo.estrutura();
+                                strResultado = calculo.analise();
                             } catch (Exception ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -223,8 +229,12 @@ public class mainForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 limpaTudo();
+                frame.setSize(750, 550);
+                frame.repaint();
+                frame.setLocationRelativeTo(null);// Center the frame on the screen
             }
         });
+
     }
 
 
@@ -233,8 +243,11 @@ public class mainForm {
         //JFrame frame = new JFrame("Análise Numérica v1.0");
         frame.setContentPane(new mainForm().pnlContainer);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        frame.setSize(750, 550);
         frame.pack();
         frame.setLocationRelativeTo(null);// Center the frame on the screen
+
         frame.setVisible(true);
         SwingUtilities.invokeLater(mainForm::new);
 
@@ -248,6 +261,10 @@ public class mainForm {
             strBase = "BASE "+strBase;
         }
         return strBase;
+    }
+
+    private void setNomeDaBase() {
+        lblPrimoComposto.setText(getNomeDaBase((int)spnBase.getValue()));
     }
 
     private void limpaEntrada() {
@@ -271,6 +288,7 @@ public class mainForm {
         strAlgarismos += Constantes.ALGARISMOS_POSSIVEIS.substring(0,(int)spnBase.getValue());
         lblAlgarismosValidos.setText(strAlgarismos);
         //limpaTudo();
+        setNomeDaBase();
     }
 
     private void checkTextFieldStatus() {
@@ -290,10 +308,11 @@ public class mainForm {
         limpaEntrada();
         txtResultado.setText("");
         lblPrimoComposto.setText("");
-        btnFatores.setSelected(true);
+        btnAnalise.setSelected(true);
         spnBase.setValue(10);
         menuHabilitado(false);
         ajustaAlgarismos();
+
     }
 
     private Numeral pegaNumero() {

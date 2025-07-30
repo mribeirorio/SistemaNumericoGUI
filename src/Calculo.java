@@ -101,6 +101,27 @@ public class Calculo {
         return txtResultado;
     }
 
+    public String decompor() throws Exception {
+        Numeral numero = pegaNumero();
+        String txtResultado = "";
+        if(numero.intValue()==0) {
+            txtResultado = ("Zero tem um número infinito de fatores, o que significa que todo número inteiro, inteiro, racional, real e imaginário é um fator de zero. Isso ocorre porque qualquer número multiplicado por zero é igual a zero, então qualquer número pode dividir zero sem deixar resto.");
+        } else {
+            FatoresNumericos fatores = new FatoresNumericos();
+            String strDecomposicao = "";
+            //
+            for(int i=0; i<numero.getParteInteira().size(); i++) {
+                strDecomposicao += "classe "+i +": "+numero.getParteInteira().get(i)+"\n";
+                for(int j=0; j<numero.getParteInteira().get(i).size(); j++) {
+                    strDecomposicao+= "    ordem "+j+" -> "+numero.getParteInteira().get(i).get(j)+"\n";
+                }
+            }
+            String titulo = "Decomposição do número "+numero.toLiteral();
+            txtResultado = titulo+"\n\n"+strDecomposicao;
+        }
+        return txtResultado;
+    }
+
     public String potencias() throws Exception {
         Numeral numero = pegaNumero();
         String txtResultado = "";
@@ -182,12 +203,17 @@ public class Calculo {
         return txtResultado;
     }
 
-    public String estrutura() throws Exception {
+    public String analise() throws Exception {
         Numeral numero = pegaNumero();
-        String baseNumero = "";
-        String titulo = "";
-        String txtResultado = "";
-        txtResultado = ("Estrutura numérica de "+String.valueOf(numero)+"\n\n(EM DESENVOLVIMENTO)");
+        // ordens e classes
+        int numOrdensInteiras = numero.getNumOrdens(0);
+        int numOrdensDecimais = numero.getNumOrdens(1);
+        String nomeBase = numero.getBaseNumerica().getNomeBase();
+        String strTitulo = "Análise do número "+numero.toLiteral()+"\n\n";
+        String strOrdensEClasses = "Possui "+numOrdensInteiras+" ordens inteiras e "+numOrdensDecimais+" ordens decimais."+"\n";
+        String strBaseNumero = "Base numérica: "+nomeBase+" base "+numero.getBaseNumerica().getValorBase()+"\n";
+
+        String txtResultado = strTitulo+strBaseNumero+strOrdensEClasses;
         return txtResultado;
     }
 
