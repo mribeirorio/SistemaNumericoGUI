@@ -229,15 +229,10 @@ public class mainForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 limpaTudo();
-                frame.setSize(750, 550);
-                frame.repaint();
-                frame.setLocationRelativeTo(null);// Center the frame on the screen
             }
         });
 
     }
-
-
 
     public static void main(String[] args) {
         //JFrame frame = new JFrame("Análise Numérica v1.0");
@@ -245,9 +240,8 @@ public class mainForm {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.setSize(750, 550);
-        frame.pack();
         frame.setLocationRelativeTo(null);// Center the frame on the screen
-
+        frame.pack();
         frame.setVisible(true);
         SwingUtilities.invokeLater(mainForm::new);
 
@@ -312,7 +306,10 @@ public class mainForm {
         spnBase.setValue(10);
         menuHabilitado(false);
         ajustaAlgarismos();
-
+        frame.setSize(750, 550);
+        frame.repaint();
+        frame.pack();
+        frame.setLocationRelativeTo(null);// Center the frame on the screen
     }
 
     private Numeral pegaNumero() {
