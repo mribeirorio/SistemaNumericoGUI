@@ -17,7 +17,7 @@
         <margin top="5" left="5" bottom="5" right="5"/>
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="2" hsize-policy="0" anchor="1" fill="0" indent="1" use-parent-layout="false">
-            <minimum-size width="200" height="400"/>
+            <minimum-size width="200" height="500"/>
             <preferred-size width="200" height="-1"/>
           </grid>
         </constraints>
@@ -59,7 +59,7 @@
               <visible value="true"/>
             </properties>
           </component>
-          <grid id="78e33" layout-manager="GridLayoutManager" row-count="9" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+          <grid id="78e33" layout-manager="GridLayoutManager" row-count="10" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
             <margin top="0" left="0" bottom="0" right="0"/>
             <constraints>
               <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="2" hsize-policy="2" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -101,22 +101,12 @@
               </component>
               <component id="e361d" class="javax.swing.JRadioButton" binding="btnDecompor">
                 <constraints>
-                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <opaque value="false"/>
                   <text value="Decompor o número"/>
                   <toolTipText value="Faz a fatoração do número em fatores primos"/>
-                </properties>
-              </component>
-              <component id="b1f8b" class="javax.swing.JRadioButton" binding="btnPotencias">
-                <constraints>
-                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                </constraints>
-                <properties>
-                  <opaque value="false"/>
-                  <text value="Produto de potências"/>
-                  <toolTipText value="Representa a fatoração do número como um produto de potências de primos"/>
                 </properties>
               </component>
               <component id="2acd2" class="javax.swing.JLabel" binding="lblMenu">
@@ -135,7 +125,7 @@
               </component>
               <component id="5e7a8" class="javax.swing.JRadioButton" binding="btnExtenso">
                 <constraints>
-                  <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <opaque value="false"/>
@@ -143,9 +133,9 @@
                   <toolTipText value="Escreve o numeral por extenso. Será convertido para a base 10 se for de outra base"/>
                 </properties>
               </component>
-              <component id="d7234" class="javax.swing.JRadioButton" binding="btnPrimosAte">
+              <component id="8ee7d" class="javax.swing.JRadioButton" binding="btnPrimosAte">
                 <constraints>
-                  <grid row="8" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <label value="Primos até o número"/>
@@ -162,6 +152,27 @@
                   <opaque value="false"/>
                   <text value="Análise do número"/>
                   <toolTipText value="Apresenta a estrutura numérica do número em ordens e classes decimais."/>
+                </properties>
+              </component>
+              <component id="b1f8b" class="javax.swing.JRadioButton" binding="btnPotencias">
+                <constraints>
+                  <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <opaque value="false"/>
+                  <text value="Fatoração com potências"/>
+                  <toolTipText value="Representa a fatoração do número como um produto de potências de primos"/>
+                </properties>
+              </component>
+              <component id="d7234" class="javax.swing.JRadioButton" binding="btnPotenciaDasOrdens">
+                <constraints>
+                  <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                </constraints>
+                <properties>
+                  <label value="Potências das ordens"/>
+                  <opaque value="false"/>
+                  <text value="Potências das ordens"/>
+                  <toolTipText value="Calcula todos os primos até o número informado. ATENÇÃO: números grandes podem demorar!"/>
                 </properties>
               </component>
             </children>
@@ -234,7 +245,7 @@
                   </grid>
                 </constraints>
                 <properties>
-                  <font name="JetBrains Mono" size="18" style="1"/>
+                  <font name="AdwaitaMono Nerd Font Mono" size="18" style="1"/>
                   <horizontalAlignment value="11"/>
                   <inheritsPopupMenu value="true"/>
                   <toolTipText value="Digite qualquer número positivo ou negativo, inteiro ou fracionário"/>
@@ -316,7 +327,7 @@
                 <constraints/>
                 <properties>
                   <editable value="false"/>
-                  <font name="BlexMono Nerd Font Mono" size="14" style="0"/>
+                  <font name="AdwaitaMono Nerd Font Mono" size="14" style="0"/>
                   <inheritsPopupMenu value="true"/>
                   <lineWrap value="true"/>
                   <margin top="5" left="5" bottom="5" right="5"/>

@@ -3,7 +3,6 @@ import org.mribeiro.exception.IndiceForaDaFaixaException;
 import org.mribeiro.fatores.FatoresNumericos;
 import org.mribeiro.sistemaNumerico.Numeral;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
@@ -18,9 +17,6 @@ import javax.swing.text.PlainDocument;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Enumeration;
 
@@ -46,16 +42,16 @@ public class mainForm {
     private JRadioButton btnDecompor;
     private JRadioButton btnPotencias;
     private JRadioButton btnExtenso;
-    private JRadioButton btnPrimosAte;
+    private JRadioButton btnPotenciaDasOrdens;
     private JRadioButton btnAnalise;
+    private JRadioButton btnPrimosAte;
+
     private ButtonGroup btnGroup = new ButtonGroup();
 
     private JLabel lblDebug;
     private JLabel lblMenu;
     private JLabel lblAlgarismosValidos;
     private JScrollPane pnlScroll;
-
-
 
 
     public mainForm() {
@@ -81,16 +77,18 @@ public class mainForm {
         btnDecompor.setActionCommand("decompor");
         btnPotencias.setActionCommand("potencias");
         btnExtenso.setActionCommand("extenso");
-        btnPrimosAte.setActionCommand("primosAte");
+        btnPotenciaDasOrdens.setActionCommand("potenciaDasOrdens");
         btnAnalise.setActionCommand("analise");
+        btnPrimosAte.setActionCommand("primosAte");
         btnGroup.add(btnFatores);
         btnGroup.add(btnPrimos);
         btnGroup.add(btnFatoracao);
         btnGroup.add(btnDecompor);
         btnGroup.add(btnPotencias);
+        btnGroup.add(btnPotenciaDasOrdens);
         btnGroup.add(btnExtenso);
-        btnGroup.add(btnPrimosAte);
         btnGroup.add(btnAnalise);
+        btnGroup.add(btnPrimosAte);
         btnAnalise.setSelected(true);
 
         menuHabilitado(false);
@@ -178,6 +176,13 @@ public class mainForm {
                                 throw new RuntimeException(ex);
                             }
                             break;
+                        case "potenciaDasOrdens": // calcula todos os fatores do número
+                            try {
+                                strResultado = calculo.potenciaDasOrdens();
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            break;
                         case "extenso": // calcula todos os fatores do número
                             try {
                                 strResultado = calculo.porExtenso();
@@ -238,6 +243,7 @@ public class mainForm {
             }
         });
 
+
     }
 
     public static void main(String[] args) {
@@ -247,32 +253,6 @@ public class mainForm {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         frame.setSize(750, 550);
-
-        JLabel imgLabel2 = null;
-        try {
-            // Load an image from a file
-            File imageFile = new File("src/images/icone.png"); // Replace with your image path
-            BufferedImage image = ImageIO.read(imageFile);
-
-            if (image != null) {
-                // Create an ImageIcon from the BufferedImage
-                ImageIcon icon = new ImageIcon(image);
-
-                // Create a JLabel to display the image
-                imgLabel2 = new JLabel(icon);
-
-                // Add the JLabel to the frame's content pane
-
-            } else {
-                System.out.println("Could not read the image.");
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.err.println("Error loading image: " + e.getMessage());
-        }
-
-        frame.add(imgLabel2);
 
         frame.setLocationRelativeTo(null);// Center the frame on the screen
         frame.pack();

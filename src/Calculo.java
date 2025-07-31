@@ -1,6 +1,11 @@
+import org.mribeiro.constantes.Constantes;
 import org.mribeiro.fatores.FatoresNumericos;
+import org.mribeiro.sistemaNumerico.ClasseNumerica;
 import org.mribeiro.sistemaNumerico.Numeral;
+import org.mribeiro.sistemaNumerico.OrdemNumerica;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Calculo {
@@ -104,19 +109,40 @@ public class Calculo {
     public String decompor() throws Exception {
         Numeral numero = pegaNumero();
         String txtResultado = "";
+        String strClasse = "";
+        String strOrdem  = "";
+        OrdemNumerica ord;
+        ClasseNumerica classe;
+        DecimalFormat formatter = new DecimalFormat("#,##0.##################"); // Shows one decimal if significant
+
         if(numero.intValue()==0) {
             txtResultado = ("Zero tem um número infinito de fatores, o que significa que todo número inteiro, inteiro, racional, real e imaginário é um fator de zero. Isso ocorre porque qualquer número multiplicado por zero é igual a zero, então qualquer número pode dividir zero sem deixar resto.");
         } else {
-            FatoresNumericos fatores = new FatoresNumericos();
-            String strDecomposicao = "";
+            //FatoresNumericos fatores = new FatoresNumericos();
+            String strDecomposicao = "PARTE INTEIRA:\n\n";
             //
             for(int i=0; i<numero.getParteInteira().size(); i++) {
-                strDecomposicao += "classe "+i +": "+numero.getParteInteira().get(i)+"\n";
+                strClasse = numero.getParteInteira().get(i).getNomeDaClasse();
+                strClasse = ((i==0) ? "Classe das " : "Classe dos ") + strClasse + ": " + numero.getParteInteira().get(i).toLiteral();
+                strDecomposicao += strClasse +"\n";
                 for(int j=0; j<numero.getParteInteira().get(i).size(); j++) {
-                    strDecomposicao+= "    ordem "+j+" -> "+numero.getParteInteira().get(i).get(j)+"\n";
+                    ord = numero.getParteInteira().get(i).get(j);
+                    strOrdem = numero.getParteInteira().get(i).get(j).getNomeDaOrdem();
+                    strDecomposicao+= "    "+ ord.getValorAbsoluto().toPlainString() + " "+ strOrdem +"\n";
                 }
             }
-            String titulo = "Decomposição do número "+numero.toLiteral();
+            strDecomposicao += "\n\nPARTE DECIMAL:\n\n";
+            for(int i=numero.getParteDecimal().size()-1; i>=0; i--) {
+                strClasse = numero.getParteDecimal().get(i).getNomeDaClasse();
+                //strClasse = ((i==0) ? "Classe das " : "Classe dos ") + strClasse;
+                strDecomposicao += strClasse +"\n";
+                for(int j=0; j<numero.getParteDecimal().get(i).size(); j++) {
+                    ord = numero.getParteDecimal().get(i).get(j);
+                    strOrdem = numero.getParteDecimal().get(i).get(j).getNomeDaOrdem();
+                    strDecomposicao+= "    "+ ord.getValorAbsoluto().toPlainString() + " "+ strOrdem +"\n";
+                }
+            }
+            String titulo = "Decomposição do número "+formatter.format(numero.getValorDecimal()); //numero.toLiteral();
             txtResultado = titulo+"\n\n"+strDecomposicao;
         }
         return txtResultado;
@@ -146,6 +172,37 @@ public class Calculo {
                 //JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular as potências.\nTente novamente.");
             }
         }
+        return txtResultado;
+    }
+
+    public String potenciaDasOrdens() throws Exception {
+        Numeral numero = pegaNumero();
+        String txtResultado = "";
+        ArrayList<OrdemNumerica> arr = new ArrayList<>();
+        OrdemNumerica ord;
+        int base = numero.getBaseNumerica().getValorBase();
+
+        if(numero.getParteInteira().getValorAbsoluto().compareTo(BigDecimal.ZERO) > 0) {
+            arr = numero.getTodasAsOrdens(Constantes.NUMERAL_PARTE_INTEIRA);
+            txtResultado += ("PARTE INTEIRA\n\n");
+            for(int i=arr.size()-1; i>=0; i--) {
+                ord = arr.get(i);
+                txtResultado += "("+ord.getValorAbsoluto().toPlainString()+"x"+base+"ˆ"+ord.getExpoente()+") + ";
+            }
+            txtResultado = txtResultado.substring(0, txtResultado.length() - 3);
+            txtResultado += "\n\n";
+        }
+        if(numero.getParteDecimal().getValorAbsoluto().compareTo(BigDecimal.ZERO) > 0) {
+            arr = numero.getTodasAsOrdens(Constantes.NUMERAL_PARTE_DECIMAL);
+            txtResultado += "PARTE DECIMAL\n\n";
+            for(int i=0; i< arr.size(); i++) {
+                ord = arr.get(i);
+                txtResultado += "("+ord.getValorAbsoluto().toPlainString()+"x"+base+"ˆ"+ord.getExpoente()+") + ";
+            }
+            txtResultado = txtResultado.substring(0, txtResultado.length() - 3);
+            txtResultado += "\n\n";
+        }
+
         return txtResultado;
     }
 
