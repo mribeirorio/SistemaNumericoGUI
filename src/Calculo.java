@@ -108,42 +108,85 @@ public class Calculo {
 
     public String decompor() throws Exception {
         Numeral numero = pegaNumero();
+        String strTitulo = "";
+        String strComentario = "";
         String txtResultado = "";
         String strClasse = "";
         String strOrdem  = "";
+        String strDecomposicao = "";
         OrdemNumerica ord;
         ClasseNumerica classe;
         DecimalFormat formatter = new DecimalFormat("#,##0.##################"); // Shows one decimal if significant
+        DecimalFormat fmtDecimalInteiro = new DecimalFormat("#,##0");
+        DecimalFormat fmtDecimalDecimal = new DecimalFormat("0.##################");
 
-        if(numero.intValue()==0) {
-            txtResultado = ("Zero tem um número infinito de fatores, o que significa que todo número inteiro, inteiro, racional, real e imaginário é um fator de zero. Isso ocorre porque qualquer número multiplicado por zero é igual a zero, então qualquer número pode dividir zero sem deixar resto.");
+        // Base decimal
+        if(numero.getBaseNumerica().isBaseDecimal()) {
+            strTitulo = "BASE DECIMAL (base"+numero.getBaseNumerica().getValorBase()+")\n\n";
+            if (numero.getValorAbsoluto().compareTo(BigDecimal.ZERO) == 0) {
+                txtResultado = ("Zero tem um número infinito de fatores, o que significa que todo número inteiro, inteiro, racional, real e imaginário é um fator de zero. Isso ocorre porque qualquer número multiplicado por zero é igual a zero, então qualquer número pode dividir zero sem deixar resto.");
+            } else {
+                strDecomposicao = "PARTE INTEIRA:\n\n";
+                //
+                for (int i = 0; i < numero.getParteInteira().size(); i++) {
+                    strClasse = numero.getParteInteira().get(i).getNomeDaClasse();
+                    strClasse = ((i == 0) ? "Classe das " : "Classe dos ") + strClasse + ": " + numero.getParteInteira().get(i).toLiteral();
+                    strDecomposicao += strClasse + "\n";
+                    for (int j = numero.getParteInteira().get(i).size()-1; j>=0; j--) {
+                        ord = numero.getParteInteira().get(i).get(j);
+                        strOrdem = numero.getParteInteira().get(i).get(j).getNomeDaOrdem();
+                        strDecomposicao += "    " + ord.getValorAbsoluto().toPlainString() + " " + strOrdem + " ("+fmtDecimalInteiro.format(ord.getValorPosicional())+" unidades)" + "\n";
+                    }
+                }
+                strDecomposicao += "\n\nPARTE DECIMAL:\n\n";
+                for (int i = numero.getParteDecimal().size() - 1; i >= 0; i--) {
+                    strClasse = numero.getParteDecimal().get(i).getNomeDaClasse() +
+                                    ": " + numero.getParteDecimal().get(i).getValorAbsoluto().toPlainString();
+                    //strClasse = ((i==0) ? "Classe das " : "Classe dos ") + strClasse;
+                    strDecomposicao += strClasse + "\n";
+                    for (int j=numero.getParteDecimal().get(i).size()-1; j >=0; j--) {
+                        ord = numero.getParteDecimal().get(i).get(j);
+                        strOrdem = numero.getParteDecimal().get(i).get(j).getNomeDaOrdem();
+                        strDecomposicao += "    " + ord.getValorAbsoluto().toPlainString() +
+                                " " + strOrdem + " ("+fmtDecimalDecimal.format(ord.getValorPosicional())+" da unidade)" + "\n";
+                    }
+                }
+                strTitulo = "Decomposição do número " + formatter.format(numero.getValorDecimal()); //numero.toLiteral();
+                txtResultado = strTitulo + "\n\n" + strDecomposicao;
+            }
         } else {
-            //FatoresNumericos fatores = new FatoresNumericos();
-            String strDecomposicao = "PARTE INTEIRA:\n\n";
+            // Bases não decimais
+            strTitulo = "BASE NÃO-DECIMAL (base"+numero.getBaseNumerica().getValorBase()+")\n\n";
+
+            strComentario = "Em bases não-decimais as ordens e classes não têm nome próprio, " +
+                    "são apenas numeradas da direita para a esquerda em ordem crescente.\n" +
+                    "O grupamento de classes é livre, pode ser de 2, 3 ou mais algarismos dependendo da aplicação.\n\n";
+            strDecomposicao = "PARTE INTEIRA:\n\n";
             //
-            for(int i=0; i<numero.getParteInteira().size(); i++) {
-                strClasse = numero.getParteInteira().get(i).getNomeDaClasse();
-                strClasse = ((i==0) ? "Classe das " : "Classe dos ") + strClasse + ": " + numero.getParteInteira().get(i).toLiteral();
-                strDecomposicao += strClasse +"\n";
-                for(int j=0; j<numero.getParteInteira().get(i).size(); j++) {
+            for (int i = 0; i < numero.getParteInteira().size(); i++) {
+                strClasse = ""; //numero.getParteInteira().get(i).getNomeDaClasse();
+                //strClasse = ((i == 0) ? "Classe das " : "Classe dos ") + strClasse + ": " + numero.getParteInteira().get(i).toLiteral();
+                //strDecomposicao += strClasse + "\n";
+                for (int j = 0; j < numero.getParteInteira().get(i).size(); j++) {
                     ord = numero.getParteInteira().get(i).get(j);
                     strOrdem = numero.getParteInteira().get(i).get(j).getNomeDaOrdem();
-                    strDecomposicao+= "    "+ ord.getValorAbsoluto().toPlainString() + " "+ strOrdem +"\n";
+                    //strDecomposicao += "    " + ord.toLiteral() + " " + strOrdem + "\n";
+                    strDecomposicao += "    " + strOrdem + "\n";
                 }
             }
             strDecomposicao += "\n\nPARTE DECIMAL:\n\n";
-            for(int i=numero.getParteDecimal().size()-1; i>=0; i--) {
-                strClasse = numero.getParteDecimal().get(i).getNomeDaClasse();
+            for (int i = numero.getParteDecimal().size() - 1; i >= 0; i--) {
+                //strClasse = numero.getParteDecimal().get(i).getNomeDaClasse();
                 //strClasse = ((i==0) ? "Classe das " : "Classe dos ") + strClasse;
-                strDecomposicao += strClasse +"\n";
-                for(int j=0; j<numero.getParteDecimal().get(i).size(); j++) {
+                //strDecomposicao += strClasse + "\n";
+                for (int j = 0; j < numero.getParteDecimal().get(i).size(); j++) {
                     ord = numero.getParteDecimal().get(i).get(j);
                     strOrdem = numero.getParteDecimal().get(i).get(j).getNomeDaOrdem();
-                    strDecomposicao+= "    "+ ord.getValorAbsoluto().toPlainString() + " "+ strOrdem +"\n";
+                    strDecomposicao += "    "  + strOrdem + "\n";
                 }
             }
-            String titulo = "Decomposição do número "+formatter.format(numero.getValorDecimal()); //numero.toLiteral();
-            txtResultado = titulo+"\n\n"+strDecomposicao;
+            strTitulo = "Decomposição do número " + numero.toLiteral(); //numero.toLiteral();
+            txtResultado = strTitulo + "\n\n" + strDecomposicao;
         }
         return txtResultado;
     }
@@ -187,7 +230,8 @@ public class Calculo {
             txtResultado += ("PARTE INTEIRA\n\n");
             for(int i=arr.size()-1; i>=0; i--) {
                 ord = arr.get(i);
-                txtResultado += "("+ord.getValorAbsoluto().toPlainString()+"x"+base+"ˆ"+ord.getExpoente()+") + ";
+                //txtResultado += "("+ord.getValorAbsoluto().toPlainString()+"x"+base+"ˆ"+ord.getExpoente()+") + ";
+                txtResultado += "("+ord.toLiteral()+" x "+base+"ˆ"+ord.getExpoente()+") + ";
             }
             txtResultado = txtResultado.substring(0, txtResultado.length() - 3);
             txtResultado += "\n\n";
