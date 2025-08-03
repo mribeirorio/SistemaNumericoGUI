@@ -34,8 +34,12 @@ public class mainForm {
     private JPanel pnlResultado;
     private JLabel lblPrimoComposto;
 
-    private final SpinnerNumberModel numberModel = new SpinnerNumberModel(10, 2, Constantes.ALGARISMOS_POSSIVEIS.length(), 1); // initial, min, max, step
-    private JSpinner spnBase;// = new JSpinner(numberModel);;
+    private final SpinnerNumberModel numberModelBase = new SpinnerNumberModel(10, 2, Constantes.ALGARISMOS_POSSIVEIS.length(), 1); // initial, min, max, step
+    private final SpinnerNumberModel numberModelDigitos = new SpinnerNumberModel(3, 1, Constantes.ALGARISMOS_POSSIVEIS.length(), 1); // initial, min, max, step
+
+    private JSpinner spnBase;       // = new JSpinner(numberModel);;
+    private JSpinner spnDigitos;
+
     private JRadioButton btnFatores;
     private JRadioButton btnPrimos;
     private JRadioButton btnFatoracao;
@@ -52,16 +56,38 @@ public class mainForm {
     private JLabel lblMenu;
     private JLabel lblAlgarismosValidos;
     private JScrollPane pnlScroll;
+    private JLabel lblDigitos;
+    private JComboBox<String> comboSepDec;// = new JComboBox<>();
+    private JComboBox<String> comboSepClasse;// = new JComboBox<>();
 
 
     public mainForm() {
+        /*
+        JComboBox<String> comboBox = new JComboBox<>();
+            comboBox.addItem("Apple");
+            comboBox.addItem("Banana");
+            comboBox.addItem("Cherry");
+            comboBox.addItem("Date");
+         */
+        comboSepDec.addItem(",");
+        //
+        comboSepClasse.addItem(".");
+        comboSepClasse.addItem(":");
+        comboSepClasse.addItem("-");
+        comboSepClasse.addItem(";");
+        //
         txtResultado.setLineWrap(true);
-        txtResultado.setBorder(null);
+        //txtResultado.setBorder(null);
+        Insets padding = new Insets(10, 10, 10, 10);
+        // Apply the padding to the JTextArea
+        txtResultado.setMargin(padding);
         pnlScroll.setBorder(null);
 
-        spnBase.setModel(numberModel);
+        spnBase.setModel(numberModelBase);
+        spnDigitos.setModel(numberModelDigitos);
         // Make the JSpinner's text field non-editable
         ((JSpinner.DefaultEditor) spnBase.getEditor()).getTextField().setEditable(false);
+        ((JSpinner.DefaultEditor) spnDigitos.getEditor()).getTextField().setEditable(false);
 
         txtNumero.setBorder(null);
         //JTextField textField = new JTextField(20);
@@ -100,7 +126,6 @@ public class mainForm {
             }
         });
 
-
         spnBase.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
@@ -109,6 +134,23 @@ public class mainForm {
                 // redefine o filtro de entrada de acordo com a base numérica
                 doc.setDocumentFilter(new NumericDocumentFilter(currentValue));
                 lblPrimoComposto.setText(getNomeDaBase(currentValue));
+                if(currentValue == 10) {
+                    spnDigitos.setValue(3);
+                } else {
+                    spnDigitos.setValue(1);
+                }
+            }
+        });
+
+        spnDigitos.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                int currentValue = (int) spnDigitos.getValue();
+                //limpaEntrada();
+                if((int)spnBase.getValue()==10) {
+                    spnDigitos.setValue(3);
+                }
+                //lblPrimoComposto.setText(getNomeDaBase(currentValue));
             }
         });
 
@@ -128,7 +170,7 @@ public class mainForm {
                     // A radio button is selected
 
                     String selectedActionCommand = selectedModel.getActionCommand();
-                    Numeral num = pegaNumero();
+                    Numeral num = getNumero();
                     Calculo calculo;
                     try {
                         if(num.getParteDecimal().getValorAbsoluto().compareTo(BigDecimal.ZERO) > 0) {
@@ -326,12 +368,13 @@ public class mainForm {
         frame.setLocationRelativeTo(null);// Center the frame on the screen
     }
 
-    private Numeral pegaNumero() {
+    private Numeral getNumero() {
         String str = txtNumero.getText();
         int base = (int)spnBase.getValue();
+        int digitosPorClasse = (int)spnDigitos.getValue();
         Numeral num = null;
         try {
-            num = new Numeral(base,str);
+            num = new Numeral(base, digitosPorClasse, str);
         } catch (Exception e) {
             //throw new RuntimeException(e);
             JOptionPane.showMessageDialog(frame, "ERRO! Valor numérico inválido.\nTente novamente.");
@@ -350,7 +393,7 @@ public class mainForm {
     }
 
     private void primoOuComposto() throws IndiceForaDaFaixaException {
-        Numeral numero = pegaNumero();
+        Numeral numero = getNumero();
         if(numero != null) {
             FatoresNumericos fatores = new FatoresNumericos();
             if(fatores.e_Primo(numero)) {

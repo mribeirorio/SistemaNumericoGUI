@@ -118,7 +118,12 @@ public class Calculo {
         Numeral numero = getNumero();
         //boolean isDecimal = numero.getBaseNumerica().isBaseDecimal();
         int base = numero.getBaseNumerica().getValorBase();
+        int digitosPorClasse = numero.getBaseNumerica().getDigitosPorClasse();
         String strNomeBase = Constantes.ARRAY_NOME_SISTEMAS_NUMERICOS[base];
+        String charDigito = "#";
+        String strFmtNaoDecimal = "\"#," + charDigito.repeat(digitosPorClasse) + ".##################";
+        //DecimalFormat fmtBaseNaoDecimal = new DecimalFormat(strFmtNaoDecimal);
+        FormatoNaoDecimal fmtBaseNaoDecimal = new FormatoNaoDecimal();
         String strTitulo = "";
         String strComentario = "";
         String strClasse = "";
@@ -135,7 +140,7 @@ public class Calculo {
         strTitulo = "DECOMPOSIÇÃO DO NÚMERO "
                 + (isDecimal() ? fmtGeral.format(numero.getValorAbsoluto()) : numero.toLiteral()) + "\n";
         strTitulo += (isDecimal()) ? "BASE DECIMAL (base "+numero.getBaseNumerica().getValorBase()+")\n"
-                : (strNomeBase!="" ? "BASE "+strNomeBase : "BASE NÃO-DECIMAL") + "(base"+base+")\n";
+                : (strNomeBase!="" ? "BASE "+strNomeBase : "BASE NÃO-DECIMAL") + " (base "+base+", "+digitosPorClasse+" dígitos por classe)\n";
         strComentario = "No sistema DECIMAL as ordens numéricas são agrupadas de 3 em 3, " +
                 "formando as classes numéricas. Cada ordem e cada classe ganha um nome próprio.\n" +
                 "Em bases não-decimais as ordens e classes não têm nome, " +
@@ -156,8 +161,9 @@ public class Calculo {
             strClasse = numero.getParteInteira().get(i).getNomeDaClasse();
             strClasse = (isDecimal() ?
                             ((i == 0) ? "Classe das " : "Classe dos ") + strClasse + ": " + numero.getParteInteira().get(i).toLiteral()
-                            : (i+1) + "a. classe");
-            strDecomposicao += (isDecimal() ? strClasse + "\n" : "");
+                            : (i+1) + "a. classe:");
+            strClasse = "\n" + strClasse;
+            strDecomposicao += (digitosPorClasse > 1) ? strClasse + "\n" : "";
             // ORDENS
             for (int j=numero.getParteInteira().get(i).size()-1; j>=0; j--) {
                 ord = numero.getParteInteira().get(i).get(j);
@@ -175,31 +181,36 @@ public class Calculo {
         // apaga o último sinal de "+"
         strSoma = strSoma.substring(0, strSoma.length()-3);
         strDecomposicao += "\n" + strSoma;
-        // Parte decimal
-        strDecomposicao += "\n\n";
-        strDecomposicao += (isDecimal() ? "PARTE DECIMAL:" : "PARTE DECIMAL --> valores na base 10:");
-        strDecomposicao += "\n";
-        strSoma = "";
         //
-        // CLASSES decimais não têm nome próprio
-        for (int i = numero.getParteDecimal().size() - 1; i >= 0; i--) {
-            // ORDENS decimais
-            for (int j=numero.getParteDecimal().get(i).size()-1; j >=0; j--) {
-                ord = numero.getParteDecimal().get(i).get(j);
-                strOrdem = ord.getNomeDaOrdem();
-                fmtNum = fmtDecimalBase10.format(ord.getValorPosicional());
-                if(isDecimal()) {
-                    strDecomposicao += "    " + ord.toLiteral() + " " + strOrdem + " (" + fmtNum + " da unidade)" + "\n";
-                } else {
-                    strDecomposicao += "    " + strOrdem + ": " + ord.toLiteral() + " --> " + fmtNum + " da unidade\n";
+        // Só processe a parte decimal se for maior que zero
+        //
+        if(numero.getParteDecimal().size() > 0) {
+            // Parte decimal
+            strDecomposicao += "\n\n";
+            strDecomposicao += (isDecimal() ? "PARTE DECIMAL:" : "PARTE DECIMAL --> valores na base 10:");
+            strDecomposicao += "\n";
+            strSoma = "";
+            //
+            // CLASSES decimais não têm nome próprio
+            for (int i = numero.getParteDecimal().size() - 1; i >= 0; i--) {
+                // ORDENS decimais
+                for (int j = numero.getParteDecimal().get(i).size() - 1; j >= 0; j--) {
+                    ord = numero.getParteDecimal().get(i).get(j);
+                    strOrdem = ord.getNomeDaOrdem();
+                    fmtNum = fmtDecimalBase10.format(ord.getValorPosicional());
+                    if (isDecimal()) {
+                        strDecomposicao += "    " + ord.toLiteral() + " " + strOrdem + " (" + fmtNum + " da unidade)" + "\n";
+                    } else {
+                        strDecomposicao += "    " + strOrdem + ": " + ord.toLiteral() + " --> " + fmtNum + " da unidade\n";
+                    }
+                    strSoma += fmtNum + " + ";
+                    strClasse += "\n\n";
                 }
-                strSoma += fmtNum + " + ";
-                strClasse += "\n\n";
             }
+            // apaga o último sinal de "+"
+            strSoma = strSoma.substring(0, strSoma.length()-3);
+            strDecomposicao += "\n"+ strSoma;
         }
-        // apaga o último sinal de "+"
-        strSoma = strSoma.substring(0, strSoma.length()-3);
-        strDecomposicao += "\n"+ strSoma;
         //
         txtResultado = strTitulo + "\n" + strDecomposicao;
         //
