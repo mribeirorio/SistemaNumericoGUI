@@ -10,19 +10,30 @@ import java.util.ArrayList;
 
 public class Calculo {
 
-    private Numeral numero;
+    private final Numeral numero;
+    private char separador;
+    private int digPorClasse;
     //
     private DecimalFormat fmtGeral = new DecimalFormat("#,##0.##################"); // Shows one decimal if significant
     private DecimalFormat fmtDecimalBase10 = new DecimalFormat("0.##################"); // Shows one decimal if significant
     private DecimalFormat fmtInteiroBase10 = new DecimalFormat("#,##0");
 
-    public Calculo(Numeral num) {
-
+    public Calculo(Numeral num) throws Exception {
         this.numero = num;
+        this.separador = getSeparadorDeClasses();
+        this.digPorClasse = getDigitosPorClasse();
     }
 
     private Numeral getNumero() throws Exception {
         return this.numero;
+    }
+
+    private char getSeparadorDeClasses() throws Exception {
+        return this.getNumero().getBaseNumerica().getSeparadorDeClasses();
+    }
+
+    private int getDigitosPorClasse() throws Exception {
+        return this.getNumero().getBaseNumerica().getDigitosPorClasse();
     }
 
     public boolean isDecimal() {
@@ -116,14 +127,15 @@ public class Calculo {
 
     public String decompor() throws Exception {
         Numeral numero = getNumero();
+        char separador = numero.getBaseNumerica().getSeparadorDeClasses();
+        int digitosPorClasse = numero.getBaseNumerica().getDigitosPorClasse();
+
         //boolean isDecimal = numero.getBaseNumerica().isBaseDecimal();
         int base = numero.getBaseNumerica().getValorBase();
-        int digitosPorClasse = numero.getBaseNumerica().getDigitosPorClasse();
         String strNomeBase = Constantes.ARRAY_NOME_SISTEMAS_NUMERICOS[base];
         String charDigito = "#";
         String strFmtNaoDecimal = "\"#," + charDigito.repeat(digitosPorClasse) + ".##################";
-        //DecimalFormat fmtBaseNaoDecimal = new DecimalFormat(strFmtNaoDecimal);
-        FormatoNaoDecimal fmtBaseNaoDecimal = new FormatoNaoDecimal();
+        NumberFormatNaoDecimal fmtBaseNaoDecimal = new NumberFormatNaoDecimal();
         String strTitulo = "";
         String strComentario = "";
         String strClasse = "";
@@ -138,7 +150,7 @@ public class Calculo {
         //
         //
         strTitulo = "DECOMPOSIÇÃO DO NÚMERO "
-                + (isDecimal() ? fmtGeral.format(numero.getValorAbsoluto()) : numero.toLiteral()) + "\n";
+                + (isDecimal() ? fmtGeral.format(numero.getValorAbsoluto()) : fmtBaseNaoDecimal.formatar(separador,digitosPorClasse, numero.toLiteral())) + "\n";
         strTitulo += (isDecimal()) ? "BASE DECIMAL (base "+numero.getBaseNumerica().getValorBase()+")\n"
                 : (strNomeBase!="" ? "BASE "+strNomeBase : "BASE NÃO-DECIMAL") + " (base "+base+", "+digitosPorClasse+" dígitos por classe)\n";
         strComentario = "No sistema DECIMAL as ordens numéricas são agrupadas de 3 em 3, " +
@@ -336,8 +348,9 @@ public class Calculo {
         // ordens e classes
         int numOrdensInteiras = numero.getNumOrdens(0);
         int numOrdensDecimais = numero.getNumOrdens(1);
+        NumberFormatNaoDecimal formato = new NumberFormatNaoDecimal();
         String nomeBase = numero.getBaseNumerica().getNomeBase();
-        String strTitulo = "Análise do número "+numero.toLiteral()+"\n\n";
+        String strTitulo = "Análise do número "+formato.formatar(this.separador, this.digPorClasse, numero.toLiteral())+"\n\n";
         String strOrdensEClasses = "Possui "+numOrdensInteiras+" ordens inteiras e "+numOrdensDecimais+" ordens decimais."+"\n";
         String strBaseNumero = "Base numérica: "+nomeBase+" base "+numero.getBaseNumerica().getValorBase()+"\n";
 

@@ -199,7 +199,7 @@
               <font name="SF Compact Display" size="12"/>
               <horizontalAlignment value="0"/>
               <horizontalTextPosition value="2"/>
-              <text value="Versão 0.1"/>
+              <text value="Versão 0.5"/>
             </properties>
           </component>
         </children>
@@ -238,14 +238,10 @@
               </component>
               <component id="d061a" class="javax.swing.JSpinner" binding="spnBase">
                 <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="4" fill="0" indent="0" use-parent-layout="false">
-                    <minimum-size width="50" height="40"/>
-                    <preferred-size width="50" height="40"/>
-                    <maximum-size width="50" height="40"/>
-                  </grid>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="1" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <font name="JetBrains Mono" size="16" style="0"/>
+                  <font name="AdwaitaMono Nerd Font Mono" size="18" style="0"/>
                   <opaque value="false"/>
                   <toolTipText value="Escolha a base numérica do número"/>
                 </properties>
@@ -260,23 +256,18 @@
               </component>
               <component id="d8557" class="javax.swing.JSpinner" binding="spnDigitos">
                 <constraints>
-                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                    <minimum-size width="50" height="40"/>
-                    <preferred-size width="50" height="40"/>
-                    <maximum-size width="50" height="40"/>
-                  </grid>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <font name="JetBrains Mono" size="16" style="0"/>
+                  <enabled value="false"/>
+                  <font name="AdwaitaMono Nerd Font Mono" size="18" style="0"/>
                   <opaque value="false"/>
                   <toolTipText value="Quantos dígitos por classe"/>
                 </properties>
               </component>
               <component id="e99a0" class="javax.swing.JTextField" binding="txtNumero">
                 <constraints>
-                  <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false">
-                    <minimum-size width="150" height="35"/>
-                  </grid>
+                  <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
                   <font name="AdwaitaMono Nerd Font Mono" size="18" style="1"/>
@@ -313,27 +304,21 @@
               </component>
               <component id="73012" class="javax.swing.JComboBox" binding="comboSepDec">
                 <constraints>
-                  <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                    <minimum-size width="80" height="40"/>
-                    <preferred-size width="80" height="40"/>
-                    <maximum-size width="80" height="40"/>
-                  </grid>
+                  <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <font name="JetBrains Mono" size="18" style="1"/>
+                  <enabled value="false"/>
+                  <font name="AdwaitaMono Nerd Font Mono" size="18" style="1"/>
                   <opaque value="false"/>
                 </properties>
               </component>
               <component id="3fd67" class="javax.swing.JComboBox" binding="comboSepClasse">
                 <constraints>
-                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false">
-                    <minimum-size width="80" height="40"/>
-                    <preferred-size width="80" height="40"/>
-                    <maximum-size width="80" height="40"/>
-                  </grid>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <font name="JetBrains Mono" size="18" style="1"/>
+                  <enabled value="false"/>
+                  <font name="AdwaitaMono Nerd Font Mono" size="18" style="1"/>
                   <opaque value="false"/>
                 </properties>
               </component>

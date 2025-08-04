@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="SistemaNumerico">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../SistemaNumerico/out/artifacts/SistemaNumerico/SistemaNumerico.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -1,6 +1,9 @@
 import org.mribeiro.constantes.Constantes;
+import org.mribeiro.exception.CaracterInvalidoException;
 import org.mribeiro.exception.IndiceForaDaFaixaException;
+import org.mribeiro.exception.ValorInvalidoParaBaseException;
 import org.mribeiro.fatores.FatoresNumericos;
+import org.mribeiro.sistemaNumerico.BaseNumerica;
 import org.mribeiro.sistemaNumerico.Numeral;
 
 import javax.swing.*;
@@ -135,9 +138,10 @@ public class mainForm {
                 doc.setDocumentFilter(new NumericDocumentFilter(currentValue));
                 lblPrimoComposto.setText(getNomeDaBase(currentValue));
                 if(currentValue == 10) {
-                    spnDigitos.setValue(3);
+                    //spnDigitos.setValue(3);
+                    resetaBase10();
                 } else {
-                    spnDigitos.setValue(1);
+                    resetaOutrasBases();
                 }
             }
         });
@@ -148,8 +152,10 @@ public class mainForm {
                 int currentValue = (int) spnDigitos.getValue();
                 //limpaEntrada();
                 if((int)spnBase.getValue()==10) {
-                    spnDigitos.setValue(3);
-                }
+                    resetaBase10();
+                } //else {
+                    //resetaOutrasBases();
+                //}
                 //lblPrimoComposto.setText(getNomeDaBase(currentValue));
             }
         });
@@ -166,11 +172,22 @@ public class mainForm {
                         primoOuComposto();
                     } catch (IndiceForaDaFaixaException ex) {
                         throw new RuntimeException(ex);
+                    } catch (CaracterInvalidoException ex) {
+                        throw new RuntimeException(ex);
+                    } catch (ValorInvalidoParaBaseException ex) {
+                        throw new RuntimeException(ex);
                     }
                     // A radio button is selected
 
                     String selectedActionCommand = selectedModel.getActionCommand();
-                    Numeral num = getNumero();
+                    Numeral num = null;
+                    try {
+                        num = getNumero();
+                    } catch (CaracterInvalidoException ex) {
+                        throw new RuntimeException(ex);
+                    } catch (ValorInvalidoParaBaseException ex) {
+                        throw new RuntimeException(ex);
+                    }
                     Calculo calculo;
                     try {
                         if(num.getParteDecimal().getValorAbsoluto().compareTo(BigDecimal.ZERO) > 0) {
@@ -248,11 +265,16 @@ public class mainForm {
                             break;
                     }
                     txtResultado.setText(strResultado);
+                    //
+
                 } else {
                     // No radio button is currently selected
                     JOptionPane.showMessageDialog(frame, "No option selected.");
                 }
+                // Rola até o início
+                pnlScroll.getViewport().setViewPosition(new Point(0, 0));
             }
+
         });
 
         txtNumero.getDocument().addDocumentListener(new DocumentListener() {
@@ -294,7 +316,7 @@ public class mainForm {
         frame.setContentPane(new mainForm().pnlContainer);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        frame.setSize(750, 550);
+        frame.setSize(850, 550);
 
         frame.setLocationRelativeTo(null);// Center the frame on the screen
         frame.pack();
@@ -359,22 +381,44 @@ public class mainForm {
         txtResultado.setText("");
         lblPrimoComposto.setText("");
         btnAnalise.setSelected(true);
-        spnBase.setValue(10);
+        resetaBase10();
         menuHabilitado(false);
         ajustaAlgarismos();
-        frame.setSize(750, 550);
+        frame.setSize(850, 550);
         frame.repaint();
         frame.pack();
         frame.setLocationRelativeTo(null);// Center the frame on the screen
     }
 
-    private Numeral getNumero() {
+    private void resetaBase10() {
+        spnBase.setValue(10);
+        spnDigitos.setValue(3);
+        comboSepClasse.setSelectedIndex(0);
+        comboSepDec.setSelectedIndex(0);
+        spnDigitos.setEnabled(false);
+        comboSepDec.setEnabled(false);
+        comboSepClasse.setEnabled(false);
+    }
+
+    private void resetaOutrasBases() {
+        //comboSepClasse.setSelectedIndex(0);
+        //comboSepDec.setSelectedIndex(0);
+        spnDigitos.setEnabled(true);
+        comboSepClasse.setEnabled(true);
+        comboSepDec.setEnabled(true);
+        spnDigitos.setValue(1);
+    }
+
+    private Numeral getNumero() throws CaracterInvalidoException, ValorInvalidoParaBaseException {
         String str = txtNumero.getText();
         int base = (int)spnBase.getValue();
         int digitosPorClasse = (int)spnDigitos.getValue();
+        char separadorDeClasses = comboSepClasse.getSelectedItem().toString().charAt(0);
+
+        BaseNumerica baseNumerica = new BaseNumerica(base, digitosPorClasse, separadorDeClasses);
         Numeral num = null;
         try {
-            num = new Numeral(base, digitosPorClasse, str);
+            num = new Numeral(baseNumerica, str);
         } catch (Exception e) {
             //throw new RuntimeException(e);
             JOptionPane.showMessageDialog(frame, "ERRO! Valor numérico inválido.\nTente novamente.");
@@ -392,7 +436,7 @@ public class mainForm {
         }
     }
 
-    private void primoOuComposto() throws IndiceForaDaFaixaException {
+    private void primoOuComposto() throws IndiceForaDaFaixaException, CaracterInvalidoException, ValorInvalidoParaBaseException {
         Numeral numero = getNumero();
         if(numero != null) {
             FatoresNumericos fatores = new FatoresNumericos();

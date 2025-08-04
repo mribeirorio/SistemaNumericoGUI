@@ -26,5 +26,8 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="commons-lang3-3.18.0" level="project" />
+    <orderEntry type="library" name="java" level="project" />
+    <orderEntry type="library" name="SistemaNumerico" level="project" />
   </component>
 </module>
