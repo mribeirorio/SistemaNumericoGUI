@@ -36,12 +36,23 @@ public class Calculo {
         return this.getNumero().getBaseNumerica().getDigitosPorClasse();
     }
 
-    public boolean isDecimal() {
+    private boolean isDecimal() {
         return (this.numero.getBaseNumerica().getValorBase() == 10);
+    }
+
+    private String getNumeroFormatado() throws Exception {
+        String resultado = "";
+        if(!isDecimal()) {
+            resultado = new NumberFormatNaoDecimal().formatar(separador, digPorClasse, numero.toLiteral());
+        } else {
+            resultado = fmtGeral.format(numero.getValorAbsoluto());
+        }
+        return resultado;
     }
 
     public String fatores() throws Exception {
         Numeral numero = getNumero();
+        String strNumFmt = getNumeroFormatado();
         String txtResultado = "";
         if(numero.intValue()==0) {
             //txtResultado.setText("Zero tem um número infinito de fatores, o que significa que todo número inteiro, inteiro, racional, real e imaginário é um fator de zero. Isso ocorre porque qualquer número multiplicado por zero é igual a zero, então qualquer número pode dividir zero sem deixar resto.");
@@ -55,10 +66,10 @@ public class Calculo {
                 long quantos = (fatores.getFatores(numero.longValue())).size();
                 String strFatores = String.valueOf(fatores.getFatores(numero.longValue()));
                 if (!numero.getBaseNumerica().isBaseDecimal()) {
-                    baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
-                    titulo = baseNumero + "\nFatores do número " + numero.toLiteral() + " (DECIMAL " + numero.getValorDecimal().toPlainString() + ")";
+                    baseNumero = "Número informado: " + strNumFmt  + " (base " + numero.getBaseNumerica().getValorBase() + ")";
+                    titulo = baseNumero + "\nFatores do número " + strNumFmt + " (DECIMAL " + fmtGeral.format(numero.getValorAbsoluto()) + ")";
                 } else {
-                    titulo = "Fatores do número " + numero.toLiteral()+" (Parte inteira: "+numero.getCharSinal()+numero.getParteInteira().toLiteral()+")";
+                    titulo = "Fatores do número " + strNumFmt +" (Parte inteira: "+numero.getCharSinal()+fmtInteiroBase10.format(numero.getValorAbsoluto(Constantes.NUMERAL_PARTE_INTEIRA))+")";
                 }
                 titulo += "\n--> " + quantos + " fator" + ((quantos==1) ? "" : "es");
                 txtResultado = (titulo + "\n\n" + strFatores);
@@ -294,12 +305,13 @@ public class Calculo {
         String baseNumero = "";
         String titulo = "";
         String txtResultado = "";
+        String strNumFmt = getNumeroFormatado();
         try {
             String strExtenso = numero.porExtenso();
             if (!isDecimal()) {
                 baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
                 titulo = baseNumero + "\nA transcrição só é possível na base 10.\n";
-                titulo += "\n"+ "(base "+ numero.getBaseNumerica().getValorBase() + ") " + numero.toLiteral() + " --> (base 10) " + numero.getValorDecimal().toPlainString();
+                titulo += "\n"+ "(base "+ numero.getBaseNumerica().getValorBase() + ") " + strNumFmt + " --> (base 10) " + fmtGeral.format(numero.getValorDecimal());
             } else {
                 titulo = "Transcrição por extenso do número " + fmtGeral.format(numero.getValorAbsoluto());
             }
@@ -317,8 +329,8 @@ public class Calculo {
         Numeral numero = getNumero();
         ArrayList<Long> fatores = new ArrayList<>();
         String txtResultado = "";
-        if(numero.intValue()==0) {
-            txtResultado = ("Não existem primos menores que zero; o menor número primo é o 2.");
+        if(numero.intValue()<=1) {
+            txtResultado = ("Não existem primos menores que 2; o menor número primo é o 2.");
         } else {
             FatoresNumericos primosAte = new FatoresNumericos();
             String baseNumero = "";

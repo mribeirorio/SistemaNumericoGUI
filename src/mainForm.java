@@ -62,16 +62,14 @@ public class mainForm {
     private JLabel lblDigitos;
     private JComboBox<String> comboSepDec;// = new JComboBox<>();
     private JComboBox<String> comboSepClasse;// = new JComboBox<>();
+    private JProgressBar progresso = new JProgressBar();
 
 
     public mainForm() {
-        /*
-        JComboBox<String> comboBox = new JComboBox<>();
-            comboBox.addItem("Apple");
-            comboBox.addItem("Banana");
-            comboBox.addItem("Cherry");
-            comboBox.addItem("Date");
-         */
+        progresso.setMinimum(0);
+        progresso.setMaximum(100);
+        progresso.setValue(77);
+
         comboSepDec.addItem(",");
         //
         comboSepClasse.addItem(".");
@@ -310,7 +308,7 @@ public class mainForm {
 
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)  {
         //JFrame frame = new JFrame("Análise Numérica v1.0");
 
         frame.setContentPane(new mainForm().pnlContainer);
