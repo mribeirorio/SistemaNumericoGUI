@@ -383,15 +383,13 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="35184" class="javax.swing.JTextArea" binding="txtResultado">
+              <component id="f2eb9" class="javax.swing.JTextPane" binding="txtResultado">
                 <constraints/>
                 <properties>
                   <editable value="false"/>
                   <font name="AdwaitaMono Nerd Font Mono" size="14" style="0"/>
                   <inheritsPopupMenu value="true"/>
-                  <lineWrap value="true"/>
                   <margin top="5" left="5" bottom="5" right="5"/>
-                  <wrapStyleWord value="true"/>
                 </properties>
               </component>
             </children>

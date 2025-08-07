@@ -32,7 +32,7 @@ public class mainForm {
     private JButton btnLimparTudo;
 
     private JTextField txtNumero;
-    private JTextArea txtResultado;
+    private JTextPane txtResultado;
     private JLabel lblNumero;
     private JPanel pnlResultado;
     private JLabel lblPrimoComposto;
@@ -77,7 +77,8 @@ public class mainForm {
         comboSepClasse.addItem("-");
         comboSepClasse.addItem(";");
         //
-        txtResultado.setLineWrap(true);
+        //txtResultado.setLineWrap(true);
+        //txtResultado.setContentType("text/html");
         //txtResultado.setBorder(null);
         Insets padding = new Insets(10, 10, 10, 10);
         // Apply the padding to the JTextArea
