@@ -4,31 +4,34 @@ import java.util.ArrayList;
 
 import org.mribeiro.sistemaNumerico.Numeral;
 
+import javax.swing.*;
+
 class PrimosAteCallable implements Callable<String> {
     private String strRetorno;
 
-    public PrimosAteCallable(Numeral num) {
+    public PrimosAteCallable(Numeral num, JTextPane saida) {
         ArrayList<Long> fatores = new ArrayList<>();
         String txtResultado = "";
         if (num.intValue() <= 1) {
             txtResultado = ("Não existem primos menores que 2; o menor número primo é o 2.");
         } else {
             //
+            saida.setText("Calculando, aguarde...");
             // retirado de fatoresNumericos
             long numero = num.longValue();
-            ArrayList<Long> factors = new ArrayList<>();
+            ArrayList<BigInteger> factors = new ArrayList<>();
 
             BigInteger contador = BigInteger.TWO;
             BigInteger bignum = BigInteger.valueOf(numero);
 
             while (contador.compareTo(bignum) < 0) {
-                factors.add(contador.longValue());
+                factors.add(contador);
+                saida.setText(contador.toString());
                 contador = contador.nextProbablePrime();
             }
-            ArrayList<Long> arrayList = new ArrayList<>(factors.stream().distinct().toList());
+            ArrayList<BigInteger> arrayList = new ArrayList<>(factors.stream().distinct().toList());
             txtResultado = arrayList.toString();
             //
-
         }
         strRetorno = txtResultado;
     }

@@ -310,6 +310,7 @@
                   <enabled value="false"/>
                   <font name="AdwaitaMono Nerd Font Mono" size="18" style="1"/>
                   <opaque value="false"/>
+                  <toolTipText value="Símbolo usado como separador decimal"/>
                 </properties>
               </component>
               <component id="3fd67" class="javax.swing.JComboBox" binding="comboSepClasse">
@@ -320,6 +321,7 @@
                   <enabled value="false"/>
                   <font name="AdwaitaMono Nerd Font Mono" size="18" style="1"/>
                   <opaque value="false"/>
+                  <toolTipText value="Símbolo usado para separar as classes numéricas"/>
                 </properties>
               </component>
             </children>
