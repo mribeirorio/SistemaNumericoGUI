@@ -10,7 +10,6 @@ import javax.swing.*;
 import javax.swing.ButtonGroup;
 import javax.swing.JRadioButton;
 
-
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -22,6 +21,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.util.Enumeration;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class mainForm {
     private static JFrame frame = new JFrame("Análise Numérica v1.0");
@@ -249,6 +253,26 @@ public class mainForm {
                             }
                             break;
                         case "primosAte": // calcula todos os fatores do número
+                            ExecutorService executor = Executors.newFixedThreadPool(3);
+
+                            try {
+                                txtResultado.setText("Calculando. Aguarde...");
+                                //
+                                // Create order processing tasks
+                                Callable<String> calculoPrimosAte = new PrimosAteCallable(getNumero());
+                                // Submit tasks to the executor
+                                Future<String> resultPrimosAte = executor.submit(calculoPrimosAte);
+                                // Wait for tasks to complete and retrieve results
+                                strResultado = resultPrimosAte.get();
+                                //strResultado = calculo.primosAte();
+                                // Shutdown the executor when done
+                                executor.shutdown();
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            break;
+                            /*
+                        case "primosAte": // calcula todos os fatores do número
                             try {
                                 txtResultado.setText("Calculando. Aguarde...");
                                 strResultado = calculo.primosAte();
@@ -256,6 +280,8 @@ public class mainForm {
                                 throw new RuntimeException(ex);
                             }
                             break;
+
+                             */
                         case "analise": // calcula todos os fatores do número
                             try {
                                 strResultado = calculo.analise();
