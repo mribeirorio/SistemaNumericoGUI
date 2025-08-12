@@ -1,5 +1,8 @@
 import org.mribeiro.constantes.Constantes;
 import org.mribeiro.fatores.FatoresNumericos;
+
+import org.mribeiro.fatores.CrivoDeAtkin;
+
 import org.mribeiro.sistemaNumerico.ClasseNumerica;
 import org.mribeiro.sistemaNumerico.Numeral;
 import org.mribeiro.sistemaNumerico.OrdemNumerica;
@@ -222,9 +225,9 @@ public class Calculo {
                     strOrdem = ord.getNomeDaOrdem();
                     fmtNum = fmtDecimalBase10.format(ord.getValorPosicional());
                     if (isDecimal()) {
-                        strDecomposicao += "    " + ord.toLiteral() + " " + strOrdem + " (" + fmtNum + " da unidade)" + "\n";
+                        strDecomposicao += "    " + ord.toLiteral() + " " + strOrdem + " (" + fmtNum + " de unidade)" + "\n";
                     } else {
-                        strDecomposicao += "    " + strOrdem + ": " + ord.toLiteral() + " --> " + fmtNum + " da unidade\n";
+                        strDecomposicao += "    " + strOrdem + ": " + ord.toLiteral() + " --> " + fmtNum + " de unidade\n";
                     }
                     strSoma += fmtNum + " + ";
                     strClasse += "\n\n";
@@ -336,7 +339,8 @@ public class Calculo {
             String baseNumero = "";
             String titulo = "";
             try {
-                fatores = primosAte.getFatoresPrimosAte(numero.longValue());
+                //fatores = primosAte.getFatoresPrimosAte(numero.longValue());
+                fatores = primosAte.getFatoresPrimosAteAtkin(numero.longValue());
                 String strPrimos = fatores.toString();
                 if (!numero.getBaseNumerica().isBaseDecimal()) {
                     baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";

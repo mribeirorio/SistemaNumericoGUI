@@ -4,6 +4,7 @@
     <root id="archive" name="SistemaNumericoGUI.jar">
       <element id="module-output" name="SistemaNumericoGUI" />
       <element id="extracted-dir" path="$PROJECT_DIR$/../SistemaNumerico/out/artifacts/SistemaNumerico/SistemaNumerico.jar" path-in-jar="/" />
+      <element id="library" level="project" name="commons-lang3-3.18.0" />
     </root>
   </artifact>
 </component>

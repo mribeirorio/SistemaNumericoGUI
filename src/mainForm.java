@@ -249,7 +249,6 @@ public class mainForm {
                             break;
                         case "primosAte": // calcula todos os fatores do número
                             try {
-                                txtResultado.setText("Calculando. Aguarde...");
                                 strResultado = calculo.primosAte();
                             } catch (Exception ex) {
                                 throw new RuntimeException(ex);
