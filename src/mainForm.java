@@ -62,6 +62,8 @@ public class mainForm {
     private JComboBox<String> comboSepDec;// = new JComboBox<>();
     private JComboBox<String> comboSepClasse;// = new JComboBox<>();
     private JProgressBar progresso = new JProgressBar();
+    private JRadioButton btnPrimosAteAtkin;
+    private JRadioButton btnPrimosAteEratostenes;
 
 
     public mainForm() {
@@ -107,6 +109,8 @@ public class mainForm {
         btnPotenciaDasOrdens.setActionCommand("potenciaDasOrdens");
         btnAnalise.setActionCommand("analise");
         btnPrimosAte.setActionCommand("primosAte");
+        btnPrimosAteAtkin.setActionCommand("primosAteAtkin");
+        btnPrimosAteEratostenes.setActionCommand("primosAteEratostenes");
         btnGroup.add(btnFatores);
         btnGroup.add(btnPrimos);
         btnGroup.add(btnFatoracao);
@@ -116,6 +120,8 @@ public class mainForm {
         btnGroup.add(btnExtenso);
         btnGroup.add(btnAnalise);
         btnGroup.add(btnPrimosAte);
+        btnGroup.add(btnPrimosAteAtkin);
+        btnGroup.add(btnPrimosAteEratostenes);
         btnAnalise.setSelected(true);
 
         menuHabilitado(false);
@@ -249,7 +255,21 @@ public class mainForm {
                             break;
                         case "primosAte": // calcula todos os fatores do número
                             try {
-                                strResultado = calculo.primosAte();
+                                strResultado = calculo.primosAte("simples");
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            break;
+                        case "primosAteAtkin": // calcula todos os fatores do número
+                            try {
+                                strResultado = calculo.primosAte("atkin");
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            break;
+                        case "primosAteEratostenes": // calcula todos os fatores do número
+                            try {
+                                strResultado = calculo.primosAte("eratostenes");
                             } catch (Exception ex) {
                                 throw new RuntimeException(ex);
                             }
