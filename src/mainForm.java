@@ -56,7 +56,7 @@ public class mainForm {
     private JRadioButton btnExtenso;
     private JRadioButton btnPotenciaDasOrdens;
     private JRadioButton btnAnalise;
-    private JRadioButton btnPrimosAte;
+    private JCheckBox btnPrimosAte;
 
     private ButtonGroup btnGroup = new ButtonGroup();
 
@@ -69,7 +69,7 @@ public class mainForm {
     private JComboBox<String> comboSepClasse;// = new JComboBox<>();
     private JProgressBar progresso = new JProgressBar();
     private JRadioButton btnPrimosAteAtkin;
-    private JRadioButton btnPrimosAteEratostenes;
+    private JCheckBox btnPrimosAteEratostenes;
 
 
     public mainForm() {
