@@ -20,9 +20,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 public class mainForm {
+
+    private long primosCalculados = 0;
+    private long tempoGasto = 0;
+
     private static JFrame frame = new JFrame("Análise Numérica v1.0");
     private JPanel pnlContainer;
     private JPanel pnlMenu;
@@ -472,165 +478,61 @@ public class mainForm {
             lblPrimoComposto.setText("");
         }
     }
-/*
-    private void fatores() {
-        Numeral numero = pegaNumero();
-        if(numero.intValue()==0) {
-            txtResultado.setText("Zero tem um número infinito de fatores, o que significa que todo número inteiro, inteiro, racional, real e imaginário é um fator de zero. Isso ocorre porque qualquer número multiplicado por zero é igual a zero, então qualquer número pode dividir zero sem deixar resto.");
-        } else {
-            FatoresNumericos fatores = new FatoresNumericos();
-            String baseNumero = "";
-            String titulo = "";
-            try {
-                long tamanho = (fatores.getFatores(numero.longValue())).size();
-                String strFatores = String.valueOf(fatores.getFatores(numero.longValue()));
-                if (!numero.getBaseNumerica().isBaseDecimal()) {
-                    baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
-                    titulo = baseNumero + "\nFatores do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
-                    titulo += "\n--> " + tamanho + " fatores";
-                } else {
-                    titulo = "Fatores do número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
-                    titulo += "\n--> " + tamanho + " fatores";
+    //
+    //
+    //
+    //
+
+    private ArrayList<Long> getFatoresPrimosAteAtkin(long limit) {
+        long[] arr = new long[Math.toIntExact(limit + 1L)];
+        Arrays.fill(arr, 0L);
+        if (limit > 2L) {
+            arr[2] = 1L;
+        }
+
+        if (limit > 3L) {
+            arr[3] = 1L;
+        }
+
+        for(long x = 1L; x * x <= limit; ++x) {
+            for(long y = 1L; y * y <= limit; ++y) {
+                long n = 4L * x * x + y * y;
+                if (n <= limit && (n % 12L == 1L || n % 12L == 5L)) {
+                    arr[Math.toIntExact(n)] = (arr[Math.toIntExact(n)] + 1L) % 2L;
                 }
-                txtResultado.setText(titulo + "\n\n" + strFatores);
-            } catch (Exception e) {
-                //throw new RuntimeException(e);
-                JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular os fatores.\nTente novamente.");
-            }
-        }
-    }
 
-    private void primos() {
-        Numeral numero = pegaNumero();
-        if(numero.intValue()==0) {
-            txtResultado.setText("Zero tem um número infinito de fatores, o que significa que todo número inteiro, inteiro, racional, real e imaginário é um fator de zero. Isso ocorre porque qualquer número multiplicado por zero é igual a zero, então qualquer número pode dividir zero sem deixar resto.");
-        } else {
-            FatoresNumericos fatores = new FatoresNumericos();
-            String baseNumero = "";
-            String titulo = "";
-            try {
-                String strFatores = String.valueOf(fatores.getFatoresPrimos(numero.longValue()));
-                if (!numero.getBaseNumerica().isBaseDecimal()) {
-                    baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
-                    titulo = baseNumero + "\nFatores primos do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
-                    titulo += "\n--> " + fatores.getFatoresPrimos(numero).size() + " fatores primos";
-                } else {
-                    titulo = "Fatores primos do número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
-                    titulo += "\n--> " + fatores.getFatoresPrimos(numero).size() + " fatores primos";
+                n = 3L * x * x + y * y;
+                if (n <= limit && n % 12L == 7L) {
+                    arr[Math.toIntExact(n)] = (arr[Math.toIntExact(n)] + 1L) % 2L;
                 }
-                txtResultado.setText(titulo + "\n\n" + strFatores);
-            } catch (Exception e) {
-                //throw new RuntimeException(e);
-                JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular os primos.\nTente novamente.");
-            }
-        }
-    }
 
-    private void fatoracao() {
-        Numeral numero = pegaNumero();
-        if(numero.intValue()==0) {
-            txtResultado.setText("Zero tem um número infinito de fatores, o que significa que todo número inteiro, inteiro, racional, real e imaginário é um fator de zero. Isso ocorre porque qualquer número multiplicado por zero é igual a zero, então qualquer número pode dividir zero sem deixar resto.");
-        } else {
-            FatoresNumericos fatores = new FatoresNumericos();
-            String baseNumero = "";
-            String titulo = "";
-            try {
-                String strFatores = fatores.getFatoracaoStr(numero.longValue());
-                if (!numero.getBaseNumerica().isBaseDecimal()) {
-                    baseNumero = "Número informado: " + numero.getParteInteira().toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
-                    titulo = baseNumero + "\nFatoração do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
-                } else {
-                    titulo = "Fatoração do número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
+                n = 3L * x * x - y * y;
+                if (x > y && n <= limit && n % 12L == 11L) {
+                    arr[Math.toIntExact(n)] = (arr[Math.toIntExact(n)] + 1L) % 2L;
                 }
-                titulo += "\n(Fatorando apenas a parte INTEIRA)";
-                txtResultado.setText(titulo + "\n\n" + strFatores);
-            } catch (Exception e) {
-                //throw new RuntimeException(e);
-                JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular a fatoração.\nTente novamente.");
             }
         }
-    }
 
-    private void potencias() {
-        Numeral numero = pegaNumero();
-        if(numero.intValue()==0) {
-            txtResultado.setText("Zero tem um número infinito de fatores, o que significa que todo número inteiro, inteiro, racional, real e imaginário é um fator de zero. Isso ocorre porque qualquer número multiplicado por zero é igual a zero, então qualquer número pode dividir zero sem deixar resto.");
-        } else {
-            FatoresNumericos fatores = new FatoresNumericos();
-            String baseNumero = "";
-            String titulo = "";
-            try {
-                String strFatores = fatores.getProdutoDePotencias(numero.longValue());
-                if (!numero.getBaseNumerica().isBaseDecimal()) {
-                    baseNumero = "Número informado: " + numero.getParteInteira().toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
-                    titulo = baseNumero + "\nProduto de potências do número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
-                } else {
-                    titulo = "Produto de potências do número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
+        for(long i = 5L; i * i <= limit; ++i) {
+            if (arr[Math.toIntExact(i)] != 0L) {
+                for(long j = i * i; j <= limit; j += i * i) {
+                    arr[Math.toIntExact(j)] = 0L;
                 }
-                titulo += "\n(Fatorando apenas a parte INTEIRA)";
-                txtResultado.setText(titulo + "\n\n" + strFatores);
-            } catch (Exception e) {
-                //throw new RuntimeException(e);
-                JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular as potências.\nTente novamente.");
             }
         }
-    }
 
-    private void porExtenso() {
-        Numeral numero = pegaNumero();
-        String baseNumero = "";
-        String titulo = "";
-        try {
-            String strExtenso = numero.porExtenso();
-            if (!numero.getBaseNumerica().isBaseDecimal()) {
-                baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
-                titulo = baseNumero + "\nA transcrição só é possível na base 10.\n";
-                titulo += "\n"+ "(base "+ numero.getBaseNumerica().getValorBase() + ") " + numero.toLiteral() + " --> (base 10) " + numero.getValorDecimal().toPlainString();
-            } else {
-                titulo = "Transcrição por extenso do número " + numero.toLiteral();
-            }
-            titulo += "\n\n" + strExtenso;
-            txtResultado.setText(titulo);
+        ArrayList<Long> primes = new ArrayList();
 
-        } catch (Exception e) {
-            //throw new RuntimeException(e);
-            JOptionPane.showMessageDialog(frame, "ERRO! Impossível transcrever o número por extenso.\nTente novamente.");
-        }
-    }
-
-    private void primosAte() {
-        Numeral numero = pegaNumero();
-        if(numero.intValue()==0) {
-            txtResultado.setText("Não existem primos menores que zero; o menor número primo é o 2.");
-        } else {
-            FatoresNumericos primosAte = new FatoresNumericos();
-            String baseNumero = "";
-            String titulo = "";
-            try {
-
-                String strPrimos = primosAte.getFatoresPrimosAte(numero.longValue()).toString();
-                if (!numero.getBaseNumerica().isBaseDecimal()) {
-                    baseNumero = "Número informado: " + numero.toLiteral() + " (base " + numero.getBaseNumerica().getValorBase() + ")";
-                    titulo = baseNumero + "\nPrimos até o número " + numero.getParteInteira().toLiteral() + " (DECIMAL " + numero.getParteInteira().getValorAbsoluto().toPlainString() + ")";
-                    titulo += "\n--> " + primosAte.getFatoresPrimosAte(numero).size() + " números primos entre 2 e " + numero.getValorDecimal().toPlainString();
-                } else {
-                    titulo = "Primos até o número " + numero.getParteInteira().getValorAbsoluto().toPlainString();
-                    titulo += "\n--> " + primosAte.getFatoresPrimosAte(numero).size() + " números primos entre 2 e " + numero.getParteInteira().getValorAbsoluto().toPlainString();
-                }
-                txtResultado.setText(titulo + "\n\n" + strPrimos);
-            } catch (Exception e) {
-                //throw new RuntimeException(e);
-                JOptionPane.showMessageDialog(frame, "ERRO! Impossível calcular os fatores primos.\nTente novamente.");
+        for(long i = 2L; i <= limit; ++i) {
+            if (arr[Math.toIntExact(i)] == 1L) {
+                primes.add(i);
             }
         }
+
+        return primes;
     }
 
-    private void estrutura() {
-        Numeral numero = pegaNumero();
-        String baseNumero = "";
-        String titulo = "";
-        txtResultado.setText(String.valueOf(numero));
-    }
-*/
+
+
 
 }
