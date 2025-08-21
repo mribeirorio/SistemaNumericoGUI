@@ -5,7 +5,7 @@ import java.util.*;
 public class Teste {
 
     public static void main(String[] args) {
-        long numero = 987654321987654321L;
+        long numero = 98765432198L;
         FatoresNumericos fat = new FatoresNumericos();
         ArrayList<Long> f = fat.getFatores(numero);
 
