@@ -7,11 +7,11 @@ import java.util.List;
 
 public class ProgressBarExample extends JFrame {
 
-    private JProgressBar progressBar;
-    private JButton startButton;
-    private JLabel lblNumPrimos;
-    private JLabel lblTempoGasto;
-    private JTextField txtNumero;
+    private final JProgressBar progressBar;
+    private final JButton startButton;
+    private final JLabel lblNumPrimos;
+    private final JLabel lblTempoGasto;
+    private final JTextField txtNumero;
 
     private int numPrimos = 0;
     private long timeStart = 0;
