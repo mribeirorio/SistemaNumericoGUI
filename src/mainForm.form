@@ -133,7 +133,7 @@
                   <toolTipText value="Escreve o numeral por extenso. Será convertido para a base 10 se for de outra base"/>
                 </properties>
               </component>
-              <component id="8ee7d" class="javax.swing.JRadioButton" binding="btnPrimosAte">
+              <component id="21497" class="javax.swing.JCheckBox" binding="btnPrimosAte">
                 <constraints>
                   <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
@@ -184,7 +184,7 @@
                   <text value="Primos até... (Atkin)"/>
                 </properties>
               </component>
-              <component id="8c7d1" class="javax.swing.JRadioButton" binding="btnPrimosAteEratostenes">
+              <component id="8ad86" class="javax.swing.JCheckBox" binding="btnPrimosAteEratostenes">
                 <constraints>
                   <grid row="11" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>

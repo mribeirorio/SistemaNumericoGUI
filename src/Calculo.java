@@ -1,7 +1,7 @@
 import org.mribeiro.constantes.Constantes;
 import org.mribeiro.fatores.FatoresNumericos;
 
-import org.mribeiro.fatores.CrivoDeAtkin;
+import org.mribeiro.fatores.PrimeCheckAtkin;
 
 import org.mribeiro.sistemaNumerico.ClasseNumerica;
 import org.mribeiro.sistemaNumerico.Numeral;
@@ -66,8 +66,9 @@ public class Calculo {
             String baseNumero = "";
             String titulo = "";
             try {
-                long quantos = (fatores.getFatores(numero.longValue())).size();
-                String strFatores = String.valueOf(fatores.getFatores(numero.longValue()));
+                ArrayList<Long> f = new FatoresNumericos().getFatores(numero.longValue());
+                long quantos = f.size();
+                String strFatores = String.valueOf(f);
                 if (!numero.getBaseNumerica().isBaseDecimal()) {
                     baseNumero = "Número informado: " + strNumFmt  + " (base " + numero.getBaseNumerica().getValorBase() + ")";
                     titulo = baseNumero + "\nFatores do número " + strNumFmt + " (DECIMAL " + fmtGeral.format(numero.getValorAbsoluto()) + ")";
